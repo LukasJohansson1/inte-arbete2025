@@ -15,4 +15,16 @@ public class Money {
         this.amount = 1;
     }
 
+    public void add(Money other){
+        this.amount = 1;
+    }
+
+    public void subtract(Money other){
+        this.amount = 1;
+    }
+
+    public String toString(){
+        return "1 SEK";
+    }
+
 }

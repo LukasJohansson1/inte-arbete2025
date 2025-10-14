@@ -1,10 +1,9 @@
 package com.example.kassasystem;
 
-import org.junit.*;
 
-import junit.framework.Assert;
-
+import org.junit.jupiter.api.*;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class MoneyTest {
@@ -38,7 +37,7 @@ public class MoneyTest {
     }
 
     @Test
-    public void testMoneySetAmount() {
+    public void testMoneySetAmountPositive() {
         Money money = new Money(0);
         money.setAmount(250);
         assertEquals(250, money.getAmount());
@@ -46,4 +45,44 @@ public class MoneyTest {
     }
 
     @Test
+    public void testMoneySetAmountNegative() {
+        Money money = new Money(100);
+        assertThrows(IllegalArgumentException.class, () -> {
+            money.setAmount(-100);
+        });
+    }
+
+    @Test
+    public void testMoneySetAmountZero() {
+        Money money = new Money(100);
+        assertThrows(IllegalArgumentException.class, () -> {
+            money.setAmount(0);
+        });
+    }
+
+    @Test 
+    public void testMoneyAdd() {
+        Money money1 = new Money(200);
+        Money money2 = new Money(300);
+        money1.add(money2);
+        assertEquals(500, money1.getAmount());
+    }
+
+    @Test
+    public void testMoneyAddOverflow() {
+        Money money1 = new Money(Long.MAX_VALUE);
+        Money money2 = new Money(1);
+        assertThrows(ArithmeticException.class, () -> {
+            money1.add(money2);
+        });
+    }
+
+    @Test
+    public void testMoneySubtract() {
+        Money money1 = new Money(500);
+        Money money2 = new Money(200);
+        money1.subtract(money2);
+        assertEquals(300, money1.getAmount());
+    }
+
 }
