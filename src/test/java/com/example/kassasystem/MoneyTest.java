@@ -1,6 +1,9 @@
 package com.example.kassasystem;
 
 import org.junit.*;
+
+import junit.framework.Assert;
+
 import static org.junit.Assert.*;
 
 
