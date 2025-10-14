@@ -5,7 +5,7 @@ public class Money {
     private long amount;
 
     public Money(long amount){
-        if (amount <= 0){
+        if (amount < 0){
             throw new IllegalStateException("Amount must be positive");
         }
         this.amount = amount;

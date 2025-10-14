@@ -17,15 +17,15 @@ public class MoneyTest {
     @Test
     public void testMoneyCreationNegative() {
         assertThrows(IllegalStateException.class, () -> {
-        Money m = new Money(-50);
+        new Money(-50);
         });
     }
 
     @Test
     public void testMoneyCreationZero() {
-        assertThrows(IllegalStateException.class, () -> {
         Money money = new Money(0);
-        });
+        assertEquals(0, money.getAmount());
+        
     }
 
     @Test
