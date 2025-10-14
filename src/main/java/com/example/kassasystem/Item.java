@@ -1,5 +1,5 @@
 package com.example.kassasystem;
 
-public class Goods {
+public class Item {
     
 }
