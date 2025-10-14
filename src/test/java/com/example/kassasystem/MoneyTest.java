@@ -30,15 +30,15 @@ public class MoneyTest {
 
     @Test
     public void testMoneyToString() {
-        Money money = new Money(500);   
-        String expected = "500 SEK";
+        Money money = new Money(5005);   
+        String expected = "50.05 SEK";
         assertEquals(expected, money.toString());
 
     }
 
     @Test
     public void testMoneySetAmountPositive() {
-        Money money = new Money(0);
+        Money money = new Money(1000);
         money.setAmount(250);
         assertEquals(250, money.getAmount());
 
@@ -55,9 +55,8 @@ public class MoneyTest {
     @Test
     public void testMoneySetAmountZero() {
         Money money = new Money(100);
-        assertThrows(IllegalArgumentException.class, () -> {
-            money.setAmount(0);
-        });
+        money.setAmount(0);
+        assertEquals(0, money.getAmount());
     }
 
     @Test 
