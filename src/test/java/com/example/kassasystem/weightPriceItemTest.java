@@ -13,22 +13,22 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class WeightPriceItemTest {
     
     @ParameterizedTest
-    @ValueSource(doubles = {1, 10, Double.MAX_VALUE})
-    public void testWeightPriceItemConstructor(double weight) {
-        Money price = new Money(1);
-        WeightPriceItem item = new WeightPriceItem("name", SalesTax.MEDIUM, price, weight);
+    @ValueSource(ints = {1, 10, Integer.MAX_VALUE})
+    public void testWeightPriceItemConstructor(int weight) {
+        Money pricePerWeightUnit = new Money(1);
+        WeightPriceItem item = new WeightPriceItem("name", SalesTax.MEDIUM, pricePerWeightUnit, weight);
 
         assertAll("test that all values are set properly", 
             () -> assertEquals("name", item.getName()),
             () -> assertEquals(SalesTax.MEDIUM, item.getSalesTax()),
             () -> assertEquals(weight, item.getWeight()),
-            () -> assertEquals(price, item.getPrice())
+            () -> assertEquals(pricePerWeightUnit, item.getPricePerWeightUnit())
         );
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = {0, -1, -100, Double.MIN_VALUE})
-    public void testWeightPriceItemConstructor_shouldThrowException(double weight) {
+    @ValueSource(ints = {0, -1, -100, Integer.MIN_VALUE})
+    public void testWeightPriceItemConstructor_shouldThrowException(int weight) {
         assertThrows(IllegalArgumentException.class, () -> {
             new WeightPriceItem("name", SalesTax.MEDIUM, new Money(1), weight);
         });
