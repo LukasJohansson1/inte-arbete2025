@@ -31,7 +31,9 @@ public class Money {
 
     //lägg till att den kastar exception om man other är större än amount
     public void subtract(Money other){
-        this.amount = amount - other.getAmount();
+        if (this.amount - other.getAmount() < 0){
+                throw new IllegalArgumentException("Resulting amount cannot be negative");
+            }
     }
 
     // Använder rest och division för att få fram stora och små enheter
