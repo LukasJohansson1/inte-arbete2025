@@ -33,6 +33,8 @@ public class Money {
     public void subtract(Money other){
         if (this.amount - other.getAmount() < 0){
                 throw new IllegalArgumentException("Resulting amount cannot be negative");
+            } else {
+                this.amount = amount - other.getAmount();
             }
     }
 
