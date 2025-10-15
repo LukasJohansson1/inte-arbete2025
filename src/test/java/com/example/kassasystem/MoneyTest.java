@@ -28,7 +28,12 @@ public class MoneyTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"0, 0.00 SEK", "1, 0.01 SEK", "10, 0.10 SEK", "100, 1.00 SEK", "10000, 100.00 SEK"})
+    @CsvSource({
+            "0, 0.00 SEK",
+            "1, 0.01 SEK",
+            "10, 0.10 SEK",
+            "100, 1.00 SEK",
+            "10000, 100.00 SEK"})
     public void testMoneyToString(long amount, String expected) {
         Money money = new Money(amount);
         assertEquals(expected, money.toString());
@@ -71,11 +76,20 @@ public class MoneyTest {
     }
 
     @Test
-    public void testMoneySubtract() {
+    public void testMoneySubtract_ValidValue() {
         Money money1 = new Money(500);
         Money money2 = new Money(200);
         money1.subtract(money2);
         assertEquals(300, money1.getAmount());
+    }
+
+    @Test
+    public void testMoneySubtract_InvalidValue() {
+        Money money1 = new Money(200);
+        Money money2 = new Money(500);
+        assertThrows(IllegalArgumentException.class, () -> {
+            money1.subtract(money2);
+        });
     }
 
 }
