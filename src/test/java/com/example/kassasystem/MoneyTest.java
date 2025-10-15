@@ -2,61 +2,55 @@ package com.example.kassasystem;
 
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class MoneyTest {
 
-    @Test
-    public void testMoneyCreation() {
-        Money money = new Money(100);
-        assertEquals(100, money.getAmount());
+    @ParameterizedTest
+    @ValueSource(longs = { 0, 1, 100, Long.MAX_VALUE})
+    public void testMoneyCreation_ValidAmount(long amount) {
+        Money money = new Money(amount);
+        assertEquals(amount, money.getAmount());
         
 }
-    @Test
-    public void testMoneyCreationNegative() {
+    @ParameterizedTest
+    @ValueSource(longs = { -1, -100, Long.MIN_VALUE})
+    public void testMoneyCreationNegative_ThrowException(long amount) {
         assertThrows(IllegalStateException.class, () -> {
-        new Money(-50);
+        new Money(amount);
         });
     }
 
-    @Test
-    public void testMoneyCreationZero() {
-        Money money = new Money(0);
-        assertEquals(0, money.getAmount());
-        
-    }
-
-    @Test
-    public void testMoneyToString() {
-        Money money = new Money(5005);   
-        String expected = "50.05 SEK";
+    @ParameterizedTest
+    @CsvSource({"0, 0.00 SEK", "1, 0.01 SEK", "10, 0.10 SEK", "100, 1.00 SEK", "10000, 100.00 SEK"})
+    public void testMoneyToString(long amount, String expected) {
+        Money money = new Money(amount);
         assertEquals(expected, money.toString());
 
     }
 
-    @Test
-    public void testMoneySetAmountPositive() {
-        Money money = new Money(1000);
-        money.setAmount(250);
-        assertEquals(250, money.getAmount());
+    @ParameterizedTest
+    @ValueSource(longs = {0, 100, Long.MAX_VALUE})
+    public void testMoneySetAmountPositive_ValidAmount(long amount) {
+        Money money = new Money(0);
+        money.setAmount(amount);
+        assertEquals(amount, money.getAmount());
 
     }
 
-    @Test
-    public void testMoneySetAmountNegative() {
-        Money money = new Money(100);
+    @ParameterizedTest
+    @ValueSource(longs = {-1, -100, Long.MIN_VALUE})
+    public void testMoneySetAmountNegative_InvalidAmount(long amount) {
+        Money money = new Money(0);
         assertThrows(IllegalArgumentException.class, () -> {
-            money.setAmount(-100);
+            money.setAmount(amount);
         });
-    }
-
-    @Test
-    public void testMoneySetAmountZero() {
-        Money money = new Money(100);
-        money.setAmount(0);
-        assertEquals(0, money.getAmount());
     }
 
     @Test 
