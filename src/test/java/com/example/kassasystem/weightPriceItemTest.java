@@ -8,25 +8,30 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class WeightPriceItemTest {
     
     @ParameterizedTest
-    @CsvSource({"1, 2", "10, 1", "100, 200"})
-    public void testWeightPriceItemConstructor(double weight, long pricePerWeightUnit) {
-        Money price = new Money(pricePerWeightUnit);
+    @ValueSource(doubles = {1, 10, Double.MAX_VALUE})
+    public void testWeightPriceItemConstructor(double weight) {
+        Money price = new Money(1);
         WeightPriceItem item = new WeightPriceItem("name", SalesTax.MEDIUM, price, weight);
 
-        assertAll("name", 
+        assertAll("test that all values are set properly", 
             () -> assertEquals("name", item.getName()),
             () -> assertEquals(SalesTax.MEDIUM, item.getSalesTax()),
-            () -> assertEquals(weight, item.getWeight())
+            () -> assertEquals(weight, item.getWeight()),
+            () -> assertEquals(price, item.getPrice())
         );
+    }
 
-        // assertEquals("name", item.getName());
-        // assertEquals(SalesTax.MEDIUM, item.getSalesTax());
-        // assertEquals(weight, item.getWeight());
-        // assertEquals(price, item.getPrice());
+    @ParameterizedTest
+    @ValueSource(doubles = {0, -1, -100, Double.MIN_VALUE})
+    public void testWeightPriceItemConstructor_shouldThrowException(double weight) {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new WeightPriceItem("name", SalesTax.MEDIUM, new Money(1), weight);
+        });
     }
 
 
