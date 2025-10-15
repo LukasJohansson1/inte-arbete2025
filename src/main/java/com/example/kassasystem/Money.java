@@ -29,6 +29,7 @@ public class Money {
         this.amount = amount + other.getAmount();
     }
 
+    //lägg till att den kastar exception om man other är större än amount
     public void subtract(Money other){
         this.amount = amount - other.getAmount();
     }
