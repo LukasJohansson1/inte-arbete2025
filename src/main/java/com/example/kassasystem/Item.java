@@ -18,4 +18,6 @@ public abstract class Item {
         return salesTax;
     }
 
+    public abstract Money getTotalPrice();
+
 }
