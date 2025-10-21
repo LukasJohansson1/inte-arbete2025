@@ -1,37 +1,60 @@
 package com.example.kassasystem;
 
-import org.junit.jupiter.api.Test;
-import java.util.List;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-class ReceiptTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ReceiptTest {
+
+    private Receipt receipt;
+
+    @BeforeEach
+    void setUp() {
+        receipt = new Receipt();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1, -100})
+    void testAddInvalidAmountPriceItemShouldThrow(int amount) {
+        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            receipt.addItem(null);
+        }, "testAddInvalidAmountPriceItemShouldThrow misslyckades");
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1, -100})
+    void testAddInvalidWeightPriceItemShouldThrow(int weight) {
+        WeightPriceItem item = new WeightPriceItem("Banan", SalesTax.LOW, new Money(50), 1500);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            receipt.addItem(null);
+        }, "testAddInvalidWeightPriceItemShouldThrow misslyckades");
+    }
 
     @Test
-void testGetTotalPriceFas1() {
-    AmountPriceItem amountItem = new AmountPriceItem(
-        "Mjölk",
-        new SalesTax(0.25),
-        new Money(1500),
-        0,
-        2
-    );
+    void testRemoveItemShouldThrowIfItemNotPresent() {
+        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
 
-    WeightPriceItem weightItem = new WeightPriceItem(
-        "Banan",
-        new SalesTax(0.12),
-        new Money(2500),
-        1200
-    );
+        assertThrows(IllegalArgumentException.class, () -> {
+            receipt.removeItem(item);
+        }, "testRemoveItemShouldThrowIfItemNotPresent misslyckades");
+    }
 
-    // Test med bara AmountPriceItem
-    Receipt receipt1 = new Receipt(List.of(amountItem));
-    assert receipt1.getTotalPrice().getAmount() == 1;
+    @Test
+    void testGetTotalShouldThrowIfEmpty() {
+        assertThrows(IllegalStateException.class, () -> {
+            receipt.getTotal(); 
+        }, "testGetTotalShouldThrowIfEmpty misslyckades");
+    }
 
-    // Test med bara WeightPriceItem
-    Receipt receipt2 = new Receipt(List.of(weightItem));
-    assert receipt2.getTotalPrice().getAmount() == 1;
-
-    // Test med båda
-    Receipt receipt3 = new Receipt(List.of(amountItem, weightItem));
-    assert receipt3.getTotalPrice().getAmount() == 2;
-}
+    @Test
+    void testPrintReceiptShouldThrowIfEmpty() {
+        assertThrows(IllegalStateException.class, () -> {
+            receipt.printReceipt(); 
+        }, "testPrintReceiptShouldThrowIfEmpty misslyckades ");
+    }
 }

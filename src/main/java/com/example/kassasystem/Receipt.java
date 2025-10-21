@@ -3,30 +3,24 @@ package com.example.kassasystem;
 import java.util.List;
 
 public class Receipt {
-    private List<Item> items;
 
-    public Receipt(List<Item> items) {
-        this.items = items;
+    public Receipt() {
+    }
+
+    public void addItem(Item item) {
+    }
+
+    public void removeItem(Item item) {
+    }
+
+    public Money getTotal() {
+        return new Money(0);
     }
 
     public void printReceipt() {
-        System.out.println("=== KVITTO ===");
-        for (Item item : items) {
-            System.out.println(item.getName() + " " + item.getTotalPrice());
-        }
     }
 
-    public Money getTotalPrice() {
-        long totalAmount = 0;
-
-        for (Item item : items) {
-            if (item instanceof AmountPriceItem) {
-                totalAmount += 1;
-            } else if (item instanceof WeightPriceItem) {
-                totalAmount += 1;
-            }
-        }
-
-        return new Money(totalAmount);
+    public List<Item> getItems() {
+        return List.of();
     }
 }
