@@ -1,6 +1,8 @@
 package com.example.kassasystem;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -20,51 +22,53 @@ public class ReceiptTest {
     @Test
     void testAddNullAmountPriceItemShouldThrow() {
         assertThrows(IllegalArgumentException.class, () -> receipt.addItem(null));
-    } // We already do check for valid amount the creation of AmountPriceItem
+    } // We already do check for valid amount the creation of AmountPriceItem only need to check for null
 
     @Test
     void testAddNullWeightPriceItemShouldThrow() {
         assertThrows(IllegalArgumentException.class, () -> receipt.addItem(null));
-    } // We already do check for valid weight the creation of WeightPriceItem
+    } // We already do check for valid weight the creation of WeightPriceItem only need to check for null
 
     @Test
     void testRemoveItemShouldThrowIfItemNotPresent() {
         AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
         assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item),
                 "Expected IllegalArgumentException when removing item not in receipt");
-    }
+    } //Check that removing an item not in receipt throws exception
 
 
     @Test
     void testGetTotalShouldThrowIfEmpty() {
         assertThrows(IllegalStateException.class, () -> receipt.getTotal(),
                 "Expected IllegalStateException for getTotal on empty receipt");
-    }
+    } // Ensure that calling getTotal on an empty receipt throws exception
 
     @Test
     void testPrintReceiptShouldThrowIfEmpty() {
         assertThrows(IllegalStateException.class, () -> receipt.printReceipt(),
                 "Expected IllegalStateException for printReceipt on empty receipt");
-    }
+    } // Ensure that calling printReceipt on an empty receipt throws exception
 
 
-    @Test
-    void testGetTotalWithAmountPriceItem() {
-        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 3);
+    @ParameterizedTest
+    @ValueSource(ints = {1, 3, 5})
+    void testGetTotalWithAmountPriceItemParameterized(int amount) {
+        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, amount);
         receipt.addItem(item);
 
         Money total = receipt.getTotal();
-        assertEquals(300, total.getAmount(), "Total for AmountPriceItem is wrong");
-    }
+        assertEquals(100 * amount, total.getAmount(), "Total for AmountPriceItem is wrong");
+    } // Check that total is calculated correctly for AmountPriceItem
 
-    @Test
-    void testGetTotalWithWeightPriceItem() {
-        WeightPriceItem item = new WeightPriceItem("Banana", SalesTax.LOW, new Money(2), 1500);
+    @ParameterizedTest
+    @ValueSource(ints = {100, 500, 1500})
+    void testGetTotalWithWeightPriceItem(int weight) {
+        WeightPriceItem item = new WeightPriceItem("Banana", SalesTax.LOW, new Money(2), weight);
         receipt.addItem(item);
 
         Money total = receipt.getTotal();
-        assertEquals(3000, total.getAmount(), "Total for WeightPriceItem is wrong");
-    }
+        assertEquals(2L* weight, total.getAmount(), "Total for WeightPriceItem is wrong");
+    } // Check that total is calculated correctly for WeightPriceItem
 
     @Test
     void testGetTotalWithMultipleItems() {
@@ -75,14 +79,14 @@ public class ReceiptTest {
 
         Money total = receipt.getTotal();
         assertEquals(1700, total.getAmount(), "Total for multiple items is wrong");
-    }
+    } // Check that total is calculated correctly for multiple items
 
     @Test
     void testAddItemAddsCorrectly() {
         AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2);
         receipt.addItem(item);
         assertTrue(receipt.getItems().contains(item), "Item should exist in receipt after addItem");
-    }
+    } // Verify that addItem actually adds the item to the receipt
 
     @Test
     void testPrintReceiptOutput() {
@@ -108,5 +112,15 @@ public class ReceiptTest {
         assertTrue(output.contains(expectedMilk), "Receipt is missing correct output for milk");
         assertTrue(output.contains(expectedBanana), "Receipt is missing correct output for Banan");
         assertTrue(output.contains(expectedTotal), "Receipt is missing correct output for total");
-    }
+    } // Check that printReceipt outputs the correct information
+
+    @Test
+    void testAddAndRemoveItem(){
+        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0 , 2);
+        receipt.addItem(item);
+        assertTrue(receipt.getItems().contains(item), "Item should exist in receipt after addItem");
+
+        receipt.removeItem(item);
+        assertFalse(receipt.getItems().contains(item), "Item should not exist in receipt after removeItem");
+    } // Verify that addItem and removeItem work correctly in tandem
 }

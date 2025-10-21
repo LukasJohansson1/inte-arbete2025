@@ -16,18 +16,6 @@ public class Receipt {
             throw new IllegalArgumentException("Item cannot be null");
         }
 
-        if (item instanceof AmountPriceItem) {
-            AmountPriceItem amountItem = (AmountPriceItem) item;
-            if (amountItem.getAmount() < 1) {
-                throw new IllegalArgumentException("Amount must be above 0");
-            }
-        } else if (item instanceof WeightPriceItem) {
-            WeightPriceItem weightItem = (WeightPriceItem) item;
-            if (weightItem.getWeight() < 1) {
-                throw new IllegalArgumentException("Weight must be above 0 grams");
-            }
-        }
-
         items.add(item);
     }
 
@@ -55,23 +43,23 @@ public class Receipt {
         return new Money(totalAmount);
     }
 
-public void printReceipt() {
-    if(items.isEmpty()) {
-        throw new IllegalStateException("Receipt is empty");
-    }
-
-    System.out.println("----- Receipt -----");
-    for (Item item : items) {
-        long itemTotalAmount = 0;
-        if(item instanceof AmountPriceItem amountItem) {
-            itemTotalAmount = amountItem.getPrice().getAmount() * amountItem.getAmount();
-        } else if (item instanceof WeightPriceItem weightPriceItem) {
-            itemTotalAmount =  weightPriceItem.getPricePerWeightUnit().getAmount() * (long) weightPriceItem.getWeight();
+    public void printReceipt() {
+        if(items.isEmpty()) {
+            throw new IllegalStateException("Receipt is empty");
         }
-        System.out.println(item.getName() + ": " + new Money(itemTotalAmount));
+
+        System.out.println("----- Receipt -----");
+        for (Item item : items) {
+            long itemTotalAmount = 0;
+            if(item instanceof AmountPriceItem amountItem) {
+                itemTotalAmount = amountItem.getPrice().getAmount() * amountItem.getAmount();
+            } else if (item instanceof WeightPriceItem weightPriceItem) {
+                itemTotalAmount =  weightPriceItem.getPricePerWeightUnit().getAmount() * (long) weightPriceItem.getWeight();
+            }
+            System.out.println(item.getName() + ": " + new Money(itemTotalAmount));
+        }
+        System.out.println("Total: " + getTotal());
     }
-    System.out.println("Total: " + getTotal());
-}
 
     public List<Item> getItems() {
         return new ArrayList<>(items);
