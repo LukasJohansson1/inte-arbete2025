@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AmountPriceItemTest {
@@ -32,6 +33,27 @@ public class AmountPriceItemTest {
         Money price = new Money(1);
         assertThrows(IllegalArgumentException.class, () -> {
             new AmountPriceItem("name", SalesTax.MEDIUM, price, ageLimit, amount);
+        });
+    }
+
+    @Test
+    public void testAmountPriceItemConstructor_throwsException_whenNameIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AmountPriceItem(null, SalesTax.MEDIUM, new Money(0), 0, 1);
+        });
+    }
+
+    @Test
+    public void testAmountPriceItemConstructor_throwsException_whenSalesTaxIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AmountPriceItem("name", null, new Money(0), 0, 1);
+        });
+    }
+
+    @Test
+    public void testAmountPriceItemConstructor_throwsException_whenMoneyIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AmountPriceItem("name", SalesTax.MEDIUM, null, 0, 1);
         });
     }
 

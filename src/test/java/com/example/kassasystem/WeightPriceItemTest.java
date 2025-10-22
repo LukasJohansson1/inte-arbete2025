@@ -34,5 +34,12 @@ public class WeightPriceItemTest {
         });
     }
 
+    @Test
+    public void testWeightPriceItemConstructor_throwsException_whenMoneyIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new WeightPriceItem("name", SalesTax.MEDIUM, null, 1);
+        });
+    }
+
 
 }

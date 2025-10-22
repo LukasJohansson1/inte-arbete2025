@@ -17,6 +17,10 @@ public class AmountPriceItem extends Item {
             throw new IllegalArgumentException("Amount must be more than 0");
         }
 
+        if (pricePerUnit == null) {
+            throw new IllegalArgumentException("Price per unit can not be null");
+        }
+
         this.pricePerUnit = pricePerUnit;
         this.ageLimit = ageLimit;
         this.amount = amount;

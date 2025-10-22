@@ -12,6 +12,10 @@ public class WeightPriceItem extends Item {
             throw new IllegalArgumentException("Weight must be above 0 grams");
         }
 
+        if (pricePerWeightUnit == null) {
+            throw new IllegalArgumentException("Price per weight unit can not be null");
+        }
+
         this.weightInGrams = weightInGrams;
         this.pricePerWeightUnit = pricePerWeightUnit;
     }
