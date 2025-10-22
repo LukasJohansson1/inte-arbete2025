@@ -33,4 +33,36 @@ public class AmountPriceItem extends Item {
     public int getAmount() {
         return amount;
     }
+
+    public void increaseAmount(int i) {
+        if (i < 1) {
+            throw new IllegalArgumentException("You must increase the amount with a number above 0");
+        }
+
+        if ((i + amount) < 0) {
+            throw new ArithmeticException("An increase with the given amount would cause an overflow");
+        }
+
+        amount += i;
+    }
+
+    public void decreaseAmount(int i) {
+        if (i < 1) {
+            throw new IllegalArgumentException("You must decrease the amount with a number above 0");
+        }
+
+        if ((amount - i < 0)) {
+            throw new IllegalStateException("The decrease would set amount to negative");
+        }
+
+        amount -= i;
+    }
+
+    public void setAmount(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException("You can't set amount to negative");
+        }
+
+        amount = i;
+    }
 }
