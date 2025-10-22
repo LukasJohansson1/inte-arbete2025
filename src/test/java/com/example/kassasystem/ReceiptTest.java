@@ -123,4 +123,29 @@ public class ReceiptTest {
         receipt.removeItem(item);
         assertFalse(receipt.getItems().contains(item), "Item should not exist in receipt after removeItem");
     } // Verify that addItem and removeItem work correctly in tandem
+
+    @Test
+    void testRemoveItemFromEmptyReceipt() {
+        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item));
+    } // Check that removing an item from an empty receipt throws exception
+
+    @Test
+    void testRemoveItemWithDifferentInstance() {
+        AmountPriceItem item1 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        AmountPriceItem item2 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        receipt.addItem(item1);
+        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item2));
+    }
+
+    @Test
+    void testRemoveOneInstanceWhenMultipleExist() {
+        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        receipt.addItem(item);
+        receipt.addItem(item);
+        assertEquals(2, receipt.getItems().size());
+        
+        receipt.removeItem(item);
+        assertEquals(1, receipt.getItems().size());
+    }
 }
