@@ -24,8 +24,20 @@ public class WeightPriceItem extends Item {
         return pricePerWeightUnit;
     }
 
-    public double getWeight() {
+    public int getWeightInGrams() {
         return weightInGrams;
+    }
+
+    public void increaseWeight(int i) {
+
+    }
+
+    public void decreaseWeight(int i) {
+
+    }
+
+    public void setWeight(int i) {
+
     }
 
 }

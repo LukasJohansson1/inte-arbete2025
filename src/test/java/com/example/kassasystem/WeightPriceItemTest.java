@@ -21,7 +21,7 @@ public class WeightPriceItemTest {
         assertAll("test that all values are set properly", 
             () -> assertEquals("name", item.getName()),
             () -> assertEquals(SalesTax.MEDIUM, item.getSalesTax()),
-            () -> assertEquals(weight, item.getWeight()),
+            () -> assertEquals(weight, item.getWeightInGrams()),
             () -> assertEquals(pricePerWeightUnit, item.getPricePerWeightUnit())
         );
     }
