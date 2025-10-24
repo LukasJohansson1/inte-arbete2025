@@ -2,61 +2,81 @@ package com.example.kassasystem;
 
 public class Customer {
 
-    private String firstName, LastName, address, socialSecurityNumber, telephoneNumber, emailAdress;
+    private String firstName, lastName, address, socialSecurityNumber, telephoneNumber, emailAddress;
     private Membership membership;
 
-    public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAdress, Membership membership) {
-
+    public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, Membership membership) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.socialSecurityNumber = socialSecurityNumber;
+        this.telephoneNumber = telephoneNumber;
+        this.emailAddress = emailAddress;
     }
 
     public String getFirstName() {
-        return "";
+        return firstName;
     }
 
     public void setFirstName(String name) {
+        if(name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Någonting");
+        }
+        if(!name.matches("^[A-ZÅÄÖ][a-zåäö]+$")) {
+            throw new IllegalArgumentException("Någonting");
+        }
+        if (name.length() < 2 || name.length() > 32) {
+            throw new IllegalArgumentException("Någonting");
+        } else {
+            firstName = name;
+        }
     }
 
     public String getLastName() {
-        return "";
+        return lastName;
     }
 
     public void setLastName(String name) {
-
+        lastName = name;
     }
 
     public String getFullName() {
-        return "";
+        return firstName + " " + lastName;
     }
 
     public String getAddress() {
-        return "";
+        return address;
     }
 
     public void setAddress(String address) {
-
+        this.address = address;
     }
 
     public String getSocialSecurityNumber() {
-        return "";
+        return socialSecurityNumber;
     }
 
     public void setSocialSecurityNumber(String ssn) {
-
-    }
-
-    public void setTelephoneNumber(String telephoneNumber) {
-
+        socialSecurityNumber = ssn;
     }
 
     public String getTelephoneNumber() {
-        return "";
+        return telephoneNumber;
     }
 
-    public void setEmailAdress(String emailAdress) {
+    public void setTelephoneNumber(String number) {
+        telephoneNumber = number;
+    }
 
+    public void setEmailAdress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public String getMembershipTier() {
         return "";
     }
 }

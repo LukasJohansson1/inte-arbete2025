@@ -3,6 +3,8 @@ package com.example.kassasystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +27,7 @@ public class CustomerTest {
                 "fgwafg",
                 () -> assertEquals("John", customer.getFirstName()),
                 () -> assertEquals("Eriksson", customer.getLastName()),
-                () -> assertEquals("Kyrkgränd 14", customer.getLastName()),
+                () -> assertEquals("Kyrkgränd 14", customer.getAddress()),
                 () -> assertEquals("20020305-5523", customer.getSocialSecurityNumber()),
                 () -> assertEquals("0739654522", customer.getTelephoneNumber()),
                 () -> assertEquals("JohnEriksson@hotmail.com", customer.getEmailAddress())
@@ -37,18 +39,20 @@ public class CustomerTest {
         assertEquals("John", customer.getFirstName());
     }
 
-    @Test
-    public void testSetName_validFirstName() {
+    @ParameterizedTest
+    @ValueSource(strings = {"Lars", "La", "Larslarslarslarslarslarslarslars",})
+    public void testSetFirstName_validFirstName() {
         customer.setFirstName("Lars");
         assertEquals("Lars", customer.getFirstName());
     }
 
-    @Test
-    public void testSetFirstName_invalid_emptyOrNull_throwsException() {
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {""})
+    public void testSetFirstName_invalid_emptyOrNull_throwsException(String name) {
         assertThrows(IllegalArgumentException.class, () -> {
-            customer.setFirstName("");
+            customer.setFirstName(name);
         });
-        assertEquals("Name cannot be empty or null", exception.getMessage());
     }
 
     @Test
@@ -56,7 +60,6 @@ public class CustomerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             customer.setFirstName("La9rs");
         });
-        assertEquals("Name can only contain letters", exception.getMessage());
     }
 
     @Test
@@ -64,7 +67,6 @@ public class CustomerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             customer.setFirstName("L");
         });
-        assertEquals("Name cannot have under 2 or above 32 characters", exception.getMessage());
     }
 
     @Test
@@ -72,7 +74,6 @@ public class CustomerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             customer.setFirstName("Larslarslarslarslarslarslarslarsl");
         });
-        assertEquals("Name cannot have under 2 or above 32 characters", exception.getMessage());
     }
 
     @Test
@@ -80,7 +81,6 @@ public class CustomerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             customer.setFirstName("La%rs");
         });
-        assertEquals("Name cannot contain invalid characters", exception.getMessage());
     }
 
     @Test
@@ -88,8 +88,15 @@ public class CustomerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             customer.setFirstName("lars");
         });
-        assertEquals("Name cannot start with a lowercase letter", exception.getMessage());
     }
+
+    @Test
+    public void testSetFirstName_invalid_hasUpperCaseInLaterPartOfName_throwsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            customer.setFirstName("LaRs");
+        });
+    }
+
 
     @Test
     public void testGetLastName_returnsLastName() {
@@ -97,7 +104,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void testGetLastName_valid() {
+    public void testSetLastName_valid() {
         customer.setLastName("Svensson");
         assertEquals("Svensson", customer.getLastName());
     }

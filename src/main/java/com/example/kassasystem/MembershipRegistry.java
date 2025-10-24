@@ -1,5 +1,4 @@
 package com.example.kassasystem;
 
-public class Membership {
-
+public class MembershipRegistry {
 }
