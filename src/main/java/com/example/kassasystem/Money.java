@@ -46,4 +46,13 @@ public class Money {
         return "" + majorUnits + (minorUnits < 10 ? ".0" : ".") + minorUnits + " SEK";
     }
 
+    public int compareTo(Money other){
+        if (this.amount < other.getAmount()){
+            return -1;
+        } else if (this.amount > other.getAmount()){
+            return 1;
+        }
+        return 0;
+    }
+
 }

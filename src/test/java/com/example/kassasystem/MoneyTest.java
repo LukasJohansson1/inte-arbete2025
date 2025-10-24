@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 public class MoneyTest {
@@ -90,6 +91,18 @@ public class MoneyTest {
         assertThrows(IllegalArgumentException.class, () -> {
             money1.subtract(money2);
         });
+    }
+
+    @Test
+    public void testMoneyCompareTo() {
+        Money money1 = new Money(300);
+        Money money2 = new Money(200);
+        Money money3 = new Money(300);
+        assertAll("compareTo tests",
+            () -> assertEquals(1, money1.compareTo(money2)),
+            () -> assertEquals(-1, money2.compareTo(money1)),
+            () -> assertEquals(0, money1.compareTo(money3))
+        );
     }
 
 }
