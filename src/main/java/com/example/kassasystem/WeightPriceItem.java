@@ -28,16 +28,36 @@ public class WeightPriceItem extends Item {
         return weightInGrams;
     }
 
-    public void increaseWeight(int i) {
+    public void increaseWeightInGrams(int i) {
+        if (i < 1) {
+            throw new IllegalArgumentException("Must increase weight with minimum 1 gram");
+        }
 
+        if (weightInGrams + i < 0) {
+            throw new ArithmeticException("Increase would cause an overflow");
+        }
+
+        weightInGrams += i;
     }
 
-    public void decreaseWeight(int i) {
+    public void decreaseWeightInGrams(int i) {
+        if (i < 1) {
+            throw new IllegalArgumentException("Must decrease weight with minimum 1 gram");
+        }
 
+        if (weightInGrams - i < 0) {
+            throw new IllegalStateException("Decrease would make weight negative");
+        }
+
+        weightInGrams -= i;
     }
 
-    public void setWeight(int i) {
+    public void setWeightInGrams(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException("Can not set weight to negative");
+        }
 
+        weightInGrams = i;
     }
 
 }
