@@ -37,7 +37,7 @@ public class Receipt {
             if (item instanceof AmountPriceItem amountItem) {
                 totalAmount += amountItem.getPrice().getAmount() * amountItem.getAmount();
             } else if (item instanceof WeightPriceItem weightPriceItem){
-                totalAmount += weightPriceItem.getPricePerWeightUnit().getAmount() * (long) weightPriceItem.getWeight();
+                totalAmount += weightPriceItem.getPricePerWeightUnit().getAmount() * (long) weightPriceItem.getWeightInGrams();
             }
         }
         return new Money(totalAmount);
@@ -54,7 +54,7 @@ public class Receipt {
             if(item instanceof AmountPriceItem amountItem) {
                 itemTotalAmount = amountItem.getPrice().getAmount() * amountItem.getAmount();
             } else if (item instanceof WeightPriceItem weightPriceItem) {
-                itemTotalAmount =  weightPriceItem.getPricePerWeightUnit().getAmount() * (long) weightPriceItem.getWeight();
+                itemTotalAmount =  weightPriceItem.getPricePerWeightUnit().getAmount() * (long) weightPriceItem.getWeightInGrams();
             }
             System.out.println(item.getName() + ": " + new Money(itemTotalAmount));
         }

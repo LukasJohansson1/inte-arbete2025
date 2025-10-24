@@ -106,7 +106,7 @@ public class ReceiptTest {
         String output = outContent.toString();
 
         String expectedMilk = "Milk: " + new Money(milk.getPrice().getAmount() * milk.getAmount());
-        String expectedBanana = "Banana: " + new Money((long)(banana.getPricePerWeightUnit().getAmount() * banana.getWeight()));
+        String expectedBanana = "Banana: " + new Money((long)(banana.getPricePerWeightUnit().getAmount() * banana.getWeightInGrams()));
         String expectedTotal = "Total: " + receipt.getTotal();
 
         assertTrue(output.contains(expectedMilk), "Receipt is missing correct output for milk");
