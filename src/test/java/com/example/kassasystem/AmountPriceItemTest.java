@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AmountPriceItemTest {
@@ -34,6 +35,96 @@ public class AmountPriceItemTest {
             new AmountPriceItem("name", SalesTax.MEDIUM, price, ageLimit, amount);
         });
     }
+
+    @Test
+    public void testAmountPriceItemConstructor_throwsException_whenNameIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AmountPriceItem(null, SalesTax.MEDIUM, new Money(0), 0, 1);
+        });
+    }
+
+    @Test
+    public void testAmountPriceItemConstructor_throwsException_whenSalesTaxIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AmountPriceItem("name", null, new Money(0), 0, 1);
+        });
+    }
+
+    @Test
+    public void testAmountPriceItemConstructor_throwsException_whenMoneyIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new AmountPriceItem("name", SalesTax.MEDIUM, null, 0, 1);
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 10, Integer.MAX_VALUE-1})
+    public void testIncreaseAmount(int increaseAmount) {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, 1);
+        item.increaseAmount(increaseAmount);
+        assertEquals(increaseAmount + 1, item.getAmount());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1, -10, Integer.MIN_VALUE})
+    public void testIncreaseAmount_throwsException_ifValueIsZeroOrNegative(int increaseAmount) {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, 1);
+        assertThrows(IllegalArgumentException.class, () -> {
+            item.increaseAmount(increaseAmount);
+        });
+    }
+
+    @Test
+    public void testIncreaseAmount_throwsException_ifOverflow() {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, Integer.MAX_VALUE);
+        assertThrows(ArithmeticException.class, () -> {
+            item.increaseAmount(1);
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 10, Integer.MAX_VALUE})
+    public void testDecreaseAmount(int decreaseAmount) {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, Integer.MAX_VALUE);
+        item.decreaseAmount(decreaseAmount);
+        assertEquals(Integer.MAX_VALUE - decreaseAmount, item.getAmount());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1, -10, Integer.MIN_VALUE})
+    public void testDecreaseAmount_throwsException_ifValueIsZeroOrNegative(int decreaseAmount) {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, 1);
+        assertThrows(IllegalArgumentException.class, () -> {
+            item.decreaseAmount(decreaseAmount);
+        });
+    }
+
+    @Test
+    public void testDecreaseAmount_throwsException_ifAmountIsNegative() {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, 1);
+        assertThrows(IllegalStateException.class, () -> {
+            item.decreaseAmount(2);
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 10, Integer.MAX_VALUE})
+    public void testSetAmount(int setAmount) {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, 2);
+        item.setAmount(setAmount);
+        assertEquals(setAmount, item.getAmount());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, -10, Integer.MIN_VALUE})
+    public void testSetAmount_throwsException_ifAmountIsNegative(int setAmount) {
+        AmountPriceItem item = new AmountPriceItem("name", SalesTax.MEDIUM, new Money(0), 0, 1);
+        assertThrows(IllegalArgumentException.class, () -> {
+            item.setAmount(setAmount);
+        });
+    }
+
+
 
 
 }
