@@ -31,7 +31,7 @@ public class ReceiptTest {
 
     @Test
     void testRemoveItemShouldThrowIfItemNotPresent() {
-        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
         assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item),
                 "Expected IllegalArgumentException when removing item not in receipt");
     } //Check that removing an item not in receipt throws exception
@@ -53,7 +53,7 @@ public class ReceiptTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5})
     void testGetTotalWithAmountPriceItemParameterized(int amount) {
-        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, amount);
+        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, amount, new EANBarcode("4006381333931"));
         receipt.addItem(item);
 
         Money total = receipt.getTotal();
@@ -63,7 +63,7 @@ public class ReceiptTest {
     @ParameterizedTest
     @ValueSource(ints = {100, 500, 1500})
     void testGetTotalWithWeightPriceItem(int weight) {
-        WeightPriceItem item = new WeightPriceItem("Banana", SalesTax.LOW, new Money(2), weight);
+        WeightPriceItem item = new WeightPriceItem("Banana", SalesTax.LOW, new Money(2), weight, new EANBarcode("4006381333931"));
         receipt.addItem(item);
 
         Money total = receipt.getTotal();
@@ -72,8 +72,8 @@ public class ReceiptTest {
 
     @Test
     void testGetTotalWithMultipleItems() {
-        AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2);
-        WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500);
+        AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2, new EANBarcode("4006381333931"));
+        WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500, new EANBarcode("5012345678900"));
         receipt.addItem(milk);
         receipt.addItem(banana);
 
@@ -83,15 +83,15 @@ public class ReceiptTest {
 
     @Test
     void testAddItemAddsCorrectly() {
-        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2);
+        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2, new EANBarcode("4006381333931"));
         receipt.addItem(item);
         assertTrue(receipt.getItems().contains(item), "Item should exist in receipt after addItem");
     } // Verify that addItem actually adds the item to the receipt
 
     @Test
     void testPrintReceiptOutput() {
-        AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2);
-        WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500);
+        AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2, new EANBarcode("4006381333931"));
+        WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500, new EANBarcode("5012345678900"));
         receipt.addItem(milk);
         receipt.addItem(banana);
 
@@ -116,7 +116,7 @@ public class ReceiptTest {
 
     @Test
     void testAddAndRemoveItem(){
-        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0 , 2);
+        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0 , 2, new EANBarcode("5012345678900"));
         receipt.addItem(item);
         assertTrue(receipt.getItems().contains(item), "Item should exist in receipt after addItem");
 
@@ -126,21 +126,21 @@ public class ReceiptTest {
 
     @Test
     void testRemoveItemFromEmptyReceipt() {
-        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("5012345678900"));
         assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item));
     } // Check that removing an item from an empty receipt throws exception
 
     @Test
     void testRemoveItemWithDifferentInstance() {
-        AmountPriceItem item1 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
-        AmountPriceItem item2 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        AmountPriceItem item1 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("5012345678900"));
+        AmountPriceItem item2 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
         receipt.addItem(item1);
         assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item2));
     }
 
     @Test
     void testRemoveOneInstanceWhenMultipleExist() {
-        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
+        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
         receipt.addItem(item);
         receipt.addItem(item);
         assertEquals(2, receipt.getItems().size());

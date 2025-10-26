@@ -6,8 +6,8 @@ public class AmountPriceItem extends Item {
     private int ageLimit;
     private int amount;
 
-    public AmountPriceItem(String name, SalesTax salesTax, Money pricePerUnit, int ageLimit, int amount) {
-        super(name, salesTax);
+    public AmountPriceItem(String name, SalesTax salesTax, Money pricePerUnit, int ageLimit, int amount, EANBarcode barcode) {
+        super(name, salesTax, barcode);
 
         if (ageLimit < 0) {
             throw new IllegalArgumentException("Age limit can not be negative");
