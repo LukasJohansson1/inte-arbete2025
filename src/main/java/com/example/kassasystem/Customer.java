@@ -5,14 +5,34 @@ public class Customer {
     private String firstName, lastName, address, socialSecurityNumber, telephoneNumber, emailAddress;
     private Membership membership;
 
-    public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, Membership membership) {
+    public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.socialSecurityNumber = socialSecurityNumber;
         this.telephoneNumber = telephoneNumber;
         this.emailAddress = emailAddress;
+        this.membership = new Membership();
     }
+    public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, int membershipPoints) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.socialSecurityNumber = socialSecurityNumber;
+        this.telephoneNumber = telephoneNumber;
+        this.emailAddress = emailAddress;
+        this.membership = new Membership(membershipPoints);
+    }
+    public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, String membershipTier) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.socialSecurityNumber = socialSecurityNumber;
+        this.telephoneNumber = telephoneNumber;
+        this.emailAddress = emailAddress;
+        this.membership = new Membership(membershipTier);
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -20,13 +40,13 @@ public class Customer {
 
     public void setFirstName(String name) {
         if(name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Någonting");
+            throw new IllegalArgumentException("Name cannot be empty");
         }
         if(!name.matches("^[A-ZÅÄÖ][a-zåäö]+$")) {
-            throw new IllegalArgumentException("Någonting");
+            throw new IllegalArgumentException("Invalid name");
         }
         if (name.length() < 2 || name.length() > 32) {
-            throw new IllegalArgumentException("Någonting");
+            throw new IllegalArgumentException("Name cannot be shorter than 2 or longer than 32 characters");
         } else {
             firstName = name;
         }
@@ -77,6 +97,10 @@ public class Customer {
     }
 
     public String getMembershipTier() {
-        return "";
+        return membership.getTier();
+    }
+
+    public Membership getMembership() {
+        return membership;
     }
 }

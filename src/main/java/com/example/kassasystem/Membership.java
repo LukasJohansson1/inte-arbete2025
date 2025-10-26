@@ -3,7 +3,9 @@ package com.example.kassasystem;
 public class Membership {
 
     private String tier;
+    //totalt antal poäng som en Customer har tjänat in. Bestämmer kundens Tier.
     private int totalPoints;
+    //antalet poäng som en Customer har just nu. Kan minska genom att de byts ut mot ex. presentkort
     private int availablePoints;
 
     public Membership() {

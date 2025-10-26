@@ -17,7 +17,7 @@ public class CustomerTest {
     @BeforeEach
     public void setUp() {
         membership = new Membership();
-        customer = new Customer("John", "Eriksson", "Kyrkgränd 14", "20020305-5523", "0739654522", "JohnEriksson@hotmail.com", membership);
+        customer = new Customer("John", "Eriksson", "Kyrkgränd 14", "20020305-5523", "0739654522", "JohnEriksson@hotmail.com");
     }
 
     @Test
