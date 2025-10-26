@@ -76,4 +76,5 @@ public class Worker {
     public int itemsHandledPerHour(int hoursWorked){
         return handleRate * hoursWorked;
     }
+    
 }

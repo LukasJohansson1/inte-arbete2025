@@ -141,5 +141,4 @@ public class WorkerTest {
         Worker w = new Worker("Liam", 15);
         assertEquals(15, w.getHandleRate());
     } // Verify that items handled per hour is returned correctly
-
 }
