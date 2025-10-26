@@ -3,7 +3,6 @@ package com.example.kassasystem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -14,7 +13,7 @@ public class CustomerTest {
     private Membership membership;
     private Customer customer;
 
-    //default setUp för att undvika onödig repetition
+    //default setUp för att undvika onödig repetition :)
     @BeforeEach
     public void setUp() {
         membership = new Membership();
