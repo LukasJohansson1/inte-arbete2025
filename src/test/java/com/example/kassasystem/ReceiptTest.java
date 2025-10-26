@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+// Låter co-pilot hantera alla kommentarer
 
 public class ReceiptTest {
 
