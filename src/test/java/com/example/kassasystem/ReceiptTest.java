@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 // Låter co-pilot hantera alla kommentarer
@@ -18,7 +19,6 @@ public class ReceiptTest {
     void setUp() {
         receipt = new Receipt();
     }
-
 
     @Test
     void testAddNullAmountPriceItemShouldThrow() {
@@ -137,7 +137,7 @@ public class ReceiptTest {
         AmountPriceItem item2 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1);
         receipt.addItem(item1);
         assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item2));
-    }
+    } // Ensure that removing an item with a different instance throws exception
 
     @Test
     void testRemoveOneInstanceWhenMultipleExist() {
@@ -148,5 +148,41 @@ public class ReceiptTest {
         
         receipt.removeItem(item);
         assertEquals(1, receipt.getItems().size());
-    }
+    } // Ensure that removing one instance of an item when multiple exist only removes one
+
+    @Test
+    public void testSortItemsByName() {
+        AmountPriceItem itemA = new AmountPriceItem("Apple", SalesTax.MEDIUM, new Money(100), 0, 1);
+        AmountPriceItem itemC = new AmountPriceItem("Carrot", SalesTax.MEDIUM, new Money(150), 0, 1);
+        AmountPriceItem itemB = new AmountPriceItem("Banana", SalesTax.MEDIUM, new Money(120), 0, 1);
+
+        receipt.addItem(itemC);
+        receipt.addItem(itemA);
+        receipt.addItem(itemB);
+
+        receipt.sortItemsByName();
+        var items = receipt.getItems();
+
+        assertEquals("Apple", items.get(0).getName());
+        assertEquals("Banana", items.get(1).getName());
+        assertEquals("Carrot", items.get(2).getName());
+    } // Verify that items are sorted correctly by name
+
+    @Test
+    public void testSortItemsByPrice() {
+        AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2); // 200
+        AmountPriceItem apple = new AmountPriceItem("Apple", SalesTax.LOW, new Money(50), 0, 3);  // 150
+        WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500); // 1500
+
+        receipt.addItem(milk);
+        receipt.addItem(apple);
+        receipt.addItem(banana);
+
+        receipt.sortItemsByPrice();
+
+        List<Item> sortedItems = receipt.getItems();
+        assertEquals("Apple", sortedItems.get(0).getName());   // 150
+        assertEquals("Milk", sortedItems.get(1).getName());    // 200
+        assertEquals("Banana", sortedItems.get(2).getName());  // 1500
+    } // Verify that items are sorted correctly by price
 }
