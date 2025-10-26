@@ -1,6 +1,7 @@
 package com.example.kassasystem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Receipt {
@@ -63,5 +64,30 @@ public class Receipt {
 
     public List<Item> getItems() {
         return new ArrayList<>(items);
+    }
+
+    public void sortItemsByName() {
+        items.sort(Comparator.comparing(Item::getName));
+    }
+
+    public void sortItemsByPrice() {
+        items.sort((item1, item2) -> {
+            long price1 = 0;
+            long price2 = 0;
+
+            if(item1 instanceof AmountPriceItem amountItem1) {
+                price1 = amountItem1.getPrice().getAmount() * amountItem1.getAmount();
+            } else if (item1 instanceof WeightPriceItem weightPriceItem1) {
+                price1 = weightPriceItem1.getPricePerWeightUnit().getAmount() * (long) weightPriceItem1.getWeightInGrams();
+            }
+
+            if(item2 instanceof AmountPriceItem amountItem2) {
+                price2 = amountItem2.getPrice().getAmount() * amountItem2.getAmount();
+            } else if (item2 instanceof WeightPriceItem weightPriceItem2) {
+                price2 = weightPriceItem2.getPricePerWeightUnit().getAmount() * (long) weightPriceItem2.getWeightInGrams();
+            }
+
+            return Long.compare(price1, price2);
+        });
     }
 }
