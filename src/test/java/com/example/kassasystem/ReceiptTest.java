@@ -152,9 +152,9 @@ public class ReceiptTest {
 
     @Test
     public void testSortItemsByName() {
-        AmountPriceItem itemA = new AmountPriceItem("Apple", SalesTax.MEDIUM, new Money(100), 0, 1);
-        AmountPriceItem itemC = new AmountPriceItem("Carrot", SalesTax.MEDIUM, new Money(150), 0, 1);
-        AmountPriceItem itemB = new AmountPriceItem("Banana", SalesTax.MEDIUM, new Money(120), 0, 1);
+        AmountPriceItem itemA = new AmountPriceItem("Apple", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
+        AmountPriceItem itemC = new AmountPriceItem("Carrot", SalesTax.MEDIUM, new Money(150), 0, 1, new EANBarcode("5012345678900"));
+        AmountPriceItem itemB = new AmountPriceItem("Banana", SalesTax.MEDIUM, new Money(120), 0, 1, new EANBarcode("96385074"));
 
         receipt.addItem(itemC);
         receipt.addItem(itemA);
@@ -170,9 +170,9 @@ public class ReceiptTest {
 
     @Test
     public void testSortItemsByPrice() {
-        AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2); // 200
-        AmountPriceItem apple = new AmountPriceItem("Apple", SalesTax.LOW, new Money(50), 0, 3);  // 150
-        WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500); // 1500
+        AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2, new EANBarcode("4006381333931")); // 200
+        AmountPriceItem apple = new AmountPriceItem("Apple", SalesTax.LOW, new Money(50), 0, 3, new EANBarcode("5012345678900"));  // 150
+        WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500, new EANBarcode("96385074")); // 1500
 
         receipt.addItem(milk);
         receipt.addItem(apple);
