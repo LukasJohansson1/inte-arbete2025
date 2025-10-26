@@ -12,13 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class EANBarcodeTest {
-    
-    @ParameterizedTest
-    @ValueSource(strings = {"4006381333931", "5012345678900", "96385074", "73513537"})
-    public void testEANBarcodeConstructor_validBarcodes(String code) {
-        EANBarcode ean = new EANBarcode(code);
-        assertEquals(ean, ean.getCode());
-    }
 
     @ParameterizedTest
     @ValueSource(strings = {"400638133393", "50123456789001", "9638507", "735135374"})
@@ -33,9 +26,16 @@ public class EANBarcodeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"8901234567890", "1234567890123", "23456780", "12345671"})
+    @ValueSource(strings = {"8901234567891", "1234567890123", "23456780", "12345671"})
     public void testEANBarcodeConstructor_invalidCheckDigit_throwsException(String code) {
         assertThrows(IllegalArgumentException.class, () -> new EANBarcode(code));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"4006381333931", "5012345678900", "96385074", "73513537"})
+    public void testEANBarcodeConstructor_validBarcodes(String code) {
+        EANBarcode ean = new EANBarcode(code);
+        assertEquals(code, ean.getCode());
     }
 
     @Test
