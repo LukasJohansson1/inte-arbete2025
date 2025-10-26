@@ -7,6 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.lang.reflect.Member;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -140,7 +142,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseAvailablePointsBeyond0_shouldThrowException() {
+    public void decreaseAvailablePointsBelow0_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.decreaseAvailablePoints(10001);
@@ -194,7 +196,85 @@ public class MembershipTest {
         });
     }
 
-    //skriva test för att öka båda typerna av points, osv.
+    @Test
+    public void increaseBothTypesOfPointsByAPositiveAmount() {
+        Membership membership = new Membership(0);
+        membership.increaseBothTypesOfPoints(10000);
+        assertEquals(10000, membership.getAvailablePoints());
+        assertEquals(membership.getTotalPoints(), membership.getAvailablePoints());
+    }
 
+    @Test
+    public void increaseBothTypesOfPointsByAPositiveAmount_bothPointsStartWithDifferentAmounts() {
+        Membership membership = new Membership(10000);
+        membership.decreaseAvailablePoints(5000);
+        membership.increaseBothTypesOfPoints(10000);
+        assertEquals(15000, membership.getAvailablePoints());
+        assertEquals(20000, membership.getTotalPoints());
+    }
+
+    @Test
+    public void increaseBothTypesOfPointsByANegativeValue_shouldThrowException() {
+        Membership membership = new Membership(10000);
+        assertThrows(IllegalArgumentException.class, () -> {
+            membership.increaseBothTypesOfPoints(-1000);
+        });
+    }
+
+    @Test
+    public void increaseBothTypesOfPointsAboveMAX_Value_shouldThrowException() {
+        Membership membership = new Membership(Integer.MAX_VALUE);
+        assertThrows(IllegalArgumentException.class, () -> {
+           membership.increaseBothTypesOfPoints(1);
+        });
+    }
+
+    @Test
+    public void decreaseBothTypesOfPoints() {
+        Membership membership = new Membership(10000);
+        membership.decreaseBothTypesOfPoints(5000);
+        assertEquals(5000, membership.getTotalPoints());
+        assertEquals(5000, membership.getAvailablePoints());
+    }
+
+    @Test
+    public void decreaseBothTypesOfPointsWithANegativeValue_shouldThrowException() {
+        Membership membership = new Membership(10000);
+        assertThrows(IllegalArgumentException.class, () -> {
+            membership.decreaseBothTypesOfPoints(-1000);
+        });
+    }
+
+    @Test
+    public void decreaseBothTypesOfPointsBelow0_shouldThrowException() {
+        Membership membership = new Membership(0);
+        assertThrows(IllegalArgumentException.class, () -> {
+           membership.decreaseBothTypesOfPoints(1);
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "5000, Silver",
+            "10000, Gold",
+            "25000, Platinum"
+    })
+    public void increaseBothTypesOfPoints_totalPointsReachesThresholdForNewTier_tierShouldIncrease(int points, String tier) {
+        Membership membership = new Membership(0);
+        membership.increaseBothTypesOfPoints(points);
+        assertEquals(tier, membership.getTier());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1, Gold",
+            "15001, Silver",
+            "20001, Bronze",
+    })
+    public void decreaseBothTypesOfPoints_totalPointsGoesBelowThresholdForCurrentTier_tierShouldDecrease(int points, String tier) {
+        Membership membership = new Membership(25000);
+        membership.decreaseBothTypesOfPoints(points);
+        assertEquals(tier, membership.getTier());
+    }
 
 }

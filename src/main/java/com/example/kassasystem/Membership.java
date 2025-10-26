@@ -77,18 +77,28 @@ public class Membership {
         }
     }
 
+    //fixa kodupprepning
+
     public void increaseTotalPoints(int points) {
-        if (increasePoints(points)) {
+        if (points < 0) {
+            throw new IllegalArgumentException("");
+        }
+        if (((long) totalPoints + points) > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("You cannot increase TotalPoints this much");
+        }
             totalPoints += points;
             changeTier(totalPoints);
-        }
     }
 
     public void decreaseTotalPoints(int points) {
-        if (decreasePoints(points)) {
+        if (points < 0) {
+            throw new IllegalArgumentException("You cannot decrease TotalPoints with a negative value");
+        }
+        if (points > totalPoints) {
+            throw new IllegalArgumentException("You cannot decrease TotalPoints points below 0");
+        }
             totalPoints -= points;
             changeTier(totalPoints);
-        }
     }
 
     public int getAvailablePoints() {
@@ -96,33 +106,33 @@ public class Membership {
     }
 
     public void decreaseAvailablePoints(int points) {
-        if(decreasePoints(points)) {
-            availablePoints -= points;
-        }
-    }
-
-    public void increaseAvailablePoints(int points) {
-        if (increasePoints(points)) {
-                availablePoints += points;
-        }
-    }
-
-    public boolean increasePoints(int points) {
-        if (points < 0) {
-            throw new IllegalArgumentException("");
-        }
-        if (((long) totalPoints + points) > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("You cannot increase TotalPoints this much");
-        } return true;
-    }
-
-    public boolean decreasePoints(int points) {
         if (points < 0) {
             throw new IllegalArgumentException("You cannot decrease AvailablePoints with a negative value");
         }
-        if (points > totalPoints) {
+        if (points > availablePoints) {
             throw new IllegalArgumentException("You cannot decrease Available points below 0");
-        } return true;
+        }
+            availablePoints -= points;
+    }
+
+    public void increaseAvailablePoints(int points) {
+        if (points < 0) {
+            throw new IllegalArgumentException("");
+        }
+        if (((long) availablePoints + points) > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("You cannot increase Available points this much");
+        }
+            availablePoints += points;
+    }
+
+    public void increaseBothTypesOfPoints(int points) {
+        increaseTotalPoints(points);
+        increaseAvailablePoints(points);
+    }
+
+    public void decreaseBothTypesOfPoints(int points) {
+        decreaseTotalPoints(points);
+        decreaseAvailablePoints(points);
     }
 
 }

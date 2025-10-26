@@ -96,7 +96,7 @@ public class CustomerTest {
             customer.setFirstName("LaRs");
         });
     }
-
+    //om tid finns lägg till checkar för att nedan skrivs på rätt format
 
     @Test
     public void testGetLastName_returnsLastName() {
