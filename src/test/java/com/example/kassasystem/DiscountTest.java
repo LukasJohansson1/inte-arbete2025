@@ -11,22 +11,26 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class DiscountTest {
 
+
     @ParameterizedTest
     @ValueSource(ints = {10, 50, 100})
-    public void testCreatePercentileDiscountForOneItem(int percentile){
+        public void testCreatePercentileDiscount(int percentile){
         EANBarcode barcode = new EANBarcode("4006381333931");
-        AmountPriceItem objectToRecieveDiscount = new AmountPriceItem("name", SalesTax.LOW, new Money(1000), 0, 1, barcode);
-
-        Discount discount = new Discount("Discount name", DiscountType.PERCENTILE, percentile, objectToRecieveDiscount);
+        AmountPriceItem objectToRecieveDiscount1 = new AmountPriceItem("name1", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
+        WeightPriceItem objectToRecieveDiscount2 = new WeightPriceItem("name2", SalesTax.MEDIUM, new Money(1000), 1, barcode);
+        Discount discount = new Discount("Discount name", DiscountType.PERCENTILE, percentile, objectToRecieveDiscount1, objectToRecieveDiscount2);
         assertAll(
-                "Discount properties",
-                () -> assertEquals("Discount name", discount.getName()),
+                "Discount contains both items + values set properly",
                 () -> assertEquals(DiscountType.PERCENTILE, discount.getDiscountType()),
                 () -> assertEquals(percentile, discount.getValue()),
-                () -> assertTrue(discount.getItems().contains(objectToRecieveDiscount))
+                () -> assertEquals("Discount name", discount.getName()),
+                () -> assertTrue(discount.getItems().contains(objectToRecieveDiscount1)),
+                () -> assertTrue(discount.getItems().contains(objectToRecieveDiscount2))
         );
-        
-    }
+            
+        }
+
+
 
     @ParameterizedTest
     @ValueSource(ints = {-1, -10, -100})
@@ -49,25 +53,50 @@ public class DiscountTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {10, 50, 100})
-    public void testCreatePercentileDiscountForSeveralItems(int percentile){
+    @ValueSource(ints = {100, 250, 1000})
+    public void testCreateFixedAmountDiscount(int fixedAmount){
         EANBarcode barcode = new EANBarcode("4006381333931");
         AmountPriceItem objectToRecieveDiscount1 = new AmountPriceItem("name1", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
-        AmountPriceItem objectToRecieveDiscount2 = new AmountPriceItem("name2", SalesTax.MEDIUM, new Money(1000), 0, 1, barcode); 
-        Discount discount = new Discount("Discount name", DiscountType.PERCENTILE, percentile, objectToRecieveDiscount1, objectToRecieveDiscount2);
+        WeightPriceItem objectToRecieveDiscount2 = new WeightPriceItem("name2", SalesTax.MEDIUM, new Money(1000), 1, barcode);
+        Discount discount = new Discount("Discount name", DiscountType.FIXED_AMOUNT, fixedAmount, objectToRecieveDiscount1, objectToRecieveDiscount2);
         assertAll(
-                "Discount contains both items",
+                "Discount contains both items + values set properly",
+                () -> assertEquals(DiscountType.FIXED_AMOUNT, discount.getDiscountType()),
+                () -> assertEquals(fixedAmount, discount.getValue()),
+                () -> assertEquals("Discount name", discount.getName()),
                 () -> assertTrue(discount.getItems().contains(objectToRecieveDiscount1)),
                 () -> assertTrue(discount.getItems().contains(objectToRecieveDiscount2))
-        );
-        
+        );      
+        }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, -10, -100})
+    public void testCreateFixedAmountDiscountZeroOrNegativeThrowsException(int fixedAmount){
+        EANBarcode barcode = new EANBarcode("4006381333931");
+        AmountPriceItem objectToRecieveDiscount = new AmountPriceItem("name", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Discount("Discount name", DiscountType.FIXED_AMOUNT, fixedAmount, objectToRecieveDiscount);
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1001, 2000})
+    public void testCreateFixedAmountDiscountExceedingItemPriceThrowsException(int fixedAmount){
+        EANBarcode barcode = new EANBarcode("4006381333931");
+        AmountPriceItem objectToRecieveDiscount = new AmountPriceItem("name", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Discount("Discount name", DiscountType.FIXED_AMOUNT, fixedAmount, objectToRecieveDiscount);
+        });
     }
 
     @Test
     public void testCreateDiscountWithoutItems_ThrowsException(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Discount("Discount name", DiscountType.PERCENTILE, 10);
-        });
+        assertAll(
+            "Creating discount without items throws exception",
+            () -> assertThrows(IllegalArgumentException.class, () -> { new Discount("Discount name", DiscountType.PERCENTILE, 10);}),
+            () -> assertThrows(IllegalArgumentException.class, () -> { new Discount("Discount name", DiscountType.FIXED_AMOUNT, 100);})
+        );      
     }
+
 
 }

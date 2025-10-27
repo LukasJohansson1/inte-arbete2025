@@ -27,8 +27,8 @@ public class Discount {
                 this.value = value;
                 break;
             case FIXED_AMOUNT:
-                if (value < 0 ) {
-                    throw new IllegalArgumentException("Fixed amount discount value must be non-negative");                  
+                if (value < 1 ) {
+                    throw new IllegalArgumentException("Fixed amount discount value must be a positive number");                  
                 }
                 for (Item item : items) {
                     if (item instanceof AmountPriceItem && ((AmountPriceItem) item).getPrice().getAmount() < value) {
@@ -37,11 +37,11 @@ public class Discount {
                     if (item instanceof WeightPriceItem && ((WeightPriceItem) item).getPricePerWeightUnit().getAmount() < value) {
                         throw new IllegalArgumentException("Fixed amount discount value cannot exceed item price per weight unit");                     
                     }
-                    this.discountType = discountType;
-                    this.value = value;
                     break;
 
                 }
+                this.discountType = discountType;
+                this.value = value;
         }
     }
 
