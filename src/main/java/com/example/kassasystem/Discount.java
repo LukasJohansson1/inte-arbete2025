@@ -3,7 +3,7 @@ package com.example.kassasystem;
 
 import java.util.*;
 
-public class Discount {
+public class Discount implements Comparable<Discount> {
 
     private String name;
     private List<Item> items;
@@ -16,6 +16,10 @@ public class Discount {
 
         if (items.length == 0) {
             throw new IllegalArgumentException("At least one item must be provided for the discount");
+        }
+
+        if (discountType == null) {
+            throw new IllegalArgumentException("Discount type cannot be null");
         }
 
         switch (discountType) {
@@ -34,14 +38,18 @@ public class Discount {
                     if (item instanceof AmountPriceItem && ((AmountPriceItem) item).getPrice().getAmount() < value) {
                         throw new IllegalArgumentException("Fixed amount discount value cannot exceed item price");                     
                     }
-                    if (item instanceof WeightPriceItem && ((WeightPriceItem) item).getPricePerWeightUnit().getAmount() < value) {
+                    else if (item instanceof WeightPriceItem && ((WeightPriceItem) item).getPricePerWeightUnit().getAmount() < value) {
                         throw new IllegalArgumentException("Fixed amount discount value cannot exceed item price per weight unit");                     
                     }
-                    break;
+                    else {
+                        continue;
+                    }
 
                 }
                 this.discountType = discountType;
                 this.value = value;
+                break;
+
         }
     }
 
@@ -59,6 +67,10 @@ public class Discount {
 
     public int getValue() {
         return value;
+    }
+
+    public int compareTo(Discount other) { //Jämför på enum värden så att FIXED_AMOUNT kommer före PERCENTILE
+        return this.discountType.compareTo(other.discountType);
     }
 
 
