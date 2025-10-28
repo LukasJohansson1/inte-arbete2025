@@ -22,7 +22,7 @@ public class Discount implements Comparable<Discount> {
             throw new IllegalArgumentException("Discount type cannot be null");
         }
 
-        switch (discountType) {
+        switch (discountType) { //branch coverage saknas för ifall discountType är null, detta kontrolleras ovan.
             case PERCENTILE:
                 if (value < 0 || value > 100) {
                     throw new IllegalArgumentException("Percentile discount value must be between 0 and 100");

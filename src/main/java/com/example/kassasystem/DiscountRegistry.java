@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class DiscountRegistry {
 
-    private Map<Discount, List<Item>> discounts = new TreeMap<>();
+    private Map<Discount, List<Item>> discounts = new TreeMap<>(); 
 
     public void addDiscount(Discount discount) {
         discounts.put(discount, discount.getItems());
@@ -29,7 +29,7 @@ public class DiscountRegistry {
         return result;
     }
 
-    public Money calculateDiscountedPrize(Item item) {
+    public Money calculateDiscountedPrize(Item item) { //Varor kan ha flera rabatter, fixed amount appliceras innan procentrabatter.
         ArrayList<Discount> applicableDiscounts = getDiscountsForItem(item);
         if (item instanceof AmountPriceItem) {
             long priceResult = ((AmountPriceItem) item).getPrice().getAmount() * ((AmountPriceItem) item).getAmount();
@@ -52,7 +52,7 @@ public class DiscountRegistry {
             }
             for (Discount d : applicableDiscounts) {
                 if (d.getDiscountType() == DiscountType.FIXED_AMOUNT) {
-                    priceResult -= d.getValue();
+                    priceResult -= d.getValue(); //Fel logik i nuläget, rabatten ignorerar vikten.
                 } else  {
                     priceResult -= (priceResult * d.getValue()) / 100;
                 }
