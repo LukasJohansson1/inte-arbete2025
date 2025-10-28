@@ -1,24 +1,33 @@
 package com.example.kassasystem;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Stock {
-    private List<Item> itemList = new ArrayList<>();
+    private final List<Item> itemList = new ArrayList<>();
     private final String filePath;
 
 
     public Stock(String filePath) {
         this.filePath = filePath;
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        loadItemsFromFile();
+    }
+
+    private void loadItemsFromFile() {
+        Path path = Path.of(filePath);
+        try (BufferedReader br = Files.newBufferedReader(path)) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
+                if (line.isBlank()) continue;
+                String[] parts = line.split(",", -1);
+                if (parts.length < 7) {
+                    continue;
+                }
                 if (parts[6].equals("WeightItem")) {
                     EANBarcode barcode = new EANBarcode(parts[0].trim());
                     String name = parts[1].trim();
@@ -41,31 +50,44 @@ public class Stock {
         } catch (Exception e) {
             throw new RuntimeException("Error reading stock file: " + e.getMessage());
         }
-
     }
+
     public List<Item> getItems() {
-
-        return itemList;
+        return new ArrayList<>(itemList);
     }
 
-    public void addWeightedItem(WeightPriceItem item) throws IOException {
+    public void addItem(Item item) throws IOException {
         Path pathOfFile = Path.of(this.filePath);
-        String data = String.format("%n%s,%s,%s,%s,%d,%d,%s", item.getBarcode(), item.getName(), item.getSalesTax(), item.getPricePerWeightUnit(), 0, item.getWeightInGrams(), "WeightItem");
+        String data;
+        Objects.requireNonNull(item, "Item cannot be null");
+        if (item instanceof WeightPriceItem) {
+            data = String.format("%n%s,%s,%s,%s,%d,%d,%s",
+                    item.getBarcode().getCode(),
+                    item.getName(),
+                    item.getSalesTax(),
+                    ((WeightPriceItem) item).getPricePerWeightUnit(),
+                    0, ((WeightPriceItem) item).getWeightInGrams(),
+                    "WeightItem");
+        }
+        else {
+            data = String.format("%n%s,%s,%s,%s,%d,%d,%s",
+                    item.getBarcode().getCode(),
+                    item.getName(),
+                    item.getSalesTax(),
+                    ((AmountPriceItem) item).getPrice(),
+                    ((AmountPriceItem) item).getAgeLimit(),
+                    ((AmountPriceItem) item).getAmount(),
+                    "AmountItem");
+        }
         Files.writeString(pathOfFile, data);
         itemList.add(item);
     }
 
-    public void addAmountItem(AmountPriceItem item) throws IOException {
-        Path pathOfFile = Path.of(this.filePath);
-        String data = String.format("%n%s,%s,%s,%s,%d,%d,%s", item.getBarcode(), item.getName(), item.getSalesTax(), item.getPrice(), item.getAgeLimit(), item.getAmount(), "AmountItem");
-        Files.writeString(pathOfFile, data);
-        itemList.add(item);
-    }
-
-    public void deleteItem(EANBarcode barcode) throws IOException {
+    public boolean deleteItem(EANBarcode barcode) throws IOException {
+        // Find the item to delete
         Item itemToDelete = null;
         for (Item item : itemList) {
-            if (item.getBarcode().equals(barcode)) {
+            if (item.getBarcode().getCode().equals(barcode.getCode())) {
                 itemToDelete = item;
                 break;
             }
@@ -76,29 +98,26 @@ public class Stock {
             List<String> lines = Files.readAllLines(pathOfFile);
             List<String> updatedLines = new ArrayList<>();
             for (String line : lines) {
-                if (!line.startsWith(barcode.toString())) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                String firstColumn = line.split(",", -1)[0].trim();
+                if (!firstColumn.equals(barcode.getCode())) {
                     updatedLines.add(line);
                 }
             }
             Files.write(pathOfFile, updatedLines);
+            return true;
         }
+        return false;
     }
 
-    public AmountPriceItem getAmountItemByBarcode(EANBarcode barcode) {
+    public Item getSpecificItemByBarcode(EANBarcode barcode) {
         for (Item item : itemList) {
-            if (item instanceof AmountPriceItem && item.getBarcode().equals(barcode)) {
-                return (AmountPriceItem) item;
+            if (item.getBarcode().equals(barcode)) {
+                return item;
             }
         }
-        throw new IllegalArgumentException("No AmountPriceItem found with the given barcode");
-    }
-
-    public WeightPriceItem getWeightItemByBarcode(EANBarcode barcode) {
-        for (Item item : itemList) {
-            if (item instanceof WeightPriceItem && item.getBarcode().equals(barcode)) {
-                return (WeightPriceItem) item;
-            }
-        }
-        throw new IllegalArgumentException("No AmountPriceItem found with the given barcode");
+        throw new IllegalArgumentException("No item found with the given barcode");
     }
 }
