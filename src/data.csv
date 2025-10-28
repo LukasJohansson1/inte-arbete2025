@@ -1,0 +1,8 @@
+Barcode,name,salesTax,price,ageLimit,weight/amount
+5012345678900,Product A,HIGH,199900,0,500,WeightItem
+4006381333931,Product B,LOW,549000,12,100,AmountItem
+6001234567890,Product C,NONE,299900,18,250,WeightItem
+8001234567890,Product D,HIGH,99900,0,50,AmountItem
+
+
+
