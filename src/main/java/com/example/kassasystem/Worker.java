@@ -33,9 +33,6 @@ public class Worker {
     }
 
     public void addSales(Money saleAmount){
-        if (saleAmount.getAmount() < 0) {
-            throw new IllegalStateException("Amount must be positive");
-        }
         totalSales.add(saleAmount);
         salesRecords.add(saleAmount);
 
