@@ -6,7 +6,7 @@ public class Customer {
     private Membership membership;
 
     public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress) {
-        this.firstName = firstName;
+        setFirstName(firstName);
         this.lastName = lastName;
         this.address = address;
         this.socialSecurityNumber = socialSecurityNumber;
@@ -14,8 +14,18 @@ public class Customer {
         this.emailAddress = emailAddress;
         this.membership = new Membership();
     }
+
+    public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, Membership membership) {
+        setFirstName(firstName);
+        this.lastName = lastName;
+        this.address = address;
+        this.socialSecurityNumber = socialSecurityNumber;
+        this.telephoneNumber = telephoneNumber;
+        this.emailAddress = emailAddress;
+        this.membership = membership;
+    }
     public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, int membershipPoints) {
-        this.firstName = firstName;
+        setFirstName(firstName);
         this.lastName = lastName;
         this.address = address;
         this.socialSecurityNumber = socialSecurityNumber;
@@ -24,7 +34,7 @@ public class Customer {
         this.membership = new Membership(membershipPoints);
     }
     public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, String membershipTier) {
-        this.firstName = firstName;
+        setFirstName(firstName);
         this.lastName = lastName;
         this.address = address;
         this.socialSecurityNumber = socialSecurityNumber;
@@ -32,7 +42,6 @@ public class Customer {
         this.emailAddress = emailAddress;
         this.membership = new Membership(membershipTier);
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -42,11 +51,12 @@ public class Customer {
         if(name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        if(!name.matches("^[A-ZÅÄÖ][a-zåäö]+$")) {
-            throw new IllegalArgumentException("Invalid name");
-        }
         if (name.length() < 2 || name.length() > 32) {
             throw new IllegalArgumentException("Name cannot be shorter than 2 or longer than 32 characters");
+        }
+        if(!name.matches("^[A-ZÅÄÖ][a-zåäö]+$")) {
+            throw new IllegalArgumentException("Invalid name");
+
         } else {
             firstName = name;
         }
@@ -88,7 +98,7 @@ public class Customer {
         telephoneNumber = number;
     }
 
-    public void setEmailAdress(String emailAddress) {
+    public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
 
