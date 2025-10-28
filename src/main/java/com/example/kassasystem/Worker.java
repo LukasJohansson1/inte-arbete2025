@@ -3,6 +3,8 @@ package com.example.kassasystem;
 import java.util.ArrayList;
 import java.util.List;
 
+// Låter co-pilot hantera alla kommentarer
+
 public class Worker {
     private String name;
     private int handleRate; 
