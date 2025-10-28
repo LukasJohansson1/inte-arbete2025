@@ -64,6 +64,13 @@ public class MembershipTest {
         assertEquals(points, membership.getTotalPoints());
     }
 
+    @Test
+    public void testConstructor_withInvalidTier_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Membership membership = new Membership("notATier");
+        });
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"Bronze", "Silver", "Gold", "Platinum" })
     public void testConstructor_withTier_shouldSetCorrectTier(String tier) {
@@ -161,6 +168,19 @@ public class MembershipTest {
     public void totalPointsDecreasingToThresholdForLowerTier_shouldDecreaseTier(int points, String tier) {
         Membership membership = new Membership(25000);
         membership.decreaseTotalPoints(points);
+        assertEquals(tier, membership.getTier());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "4999, Bronze",
+            "9999, Silver",
+            "24999, Gold",
+            "25001, Platinum"
+    })
+    public void totalPointsIncreasingToBelowThreshold_shouldStayInSameTier(int points, String tier) {
+        Membership membership = new Membership();
+        membership.increaseTotalPoints(points);
         assertEquals(tier, membership.getTier());
     }
 

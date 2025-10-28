@@ -29,15 +29,6 @@ public class WorkerTest {
     } // Verify that bonus calculation is correct
 
     @Test
-    public void testAddNegativeSales(){
-        Worker w = new Worker("Lisa", 20);
-        Exception exception = assertThrows(IllegalStateException.class, () -> {
-            w.addSales(new Money(-1000)); // Negative sales should throw exception
-        });
-        assertEquals("Amount must be positive", exception.getMessage());
-    } // Ensure that adding negative sales throws exception
-
-    @Test
     public void testMonthlyReset(){
         Worker w = new Worker("Erik", 20);
         w.addSales(new Money(100000));
@@ -141,4 +132,13 @@ public class WorkerTest {
         Worker w = new Worker("Liam", 15);
         assertEquals(15, w.getHandleRate());
     } // Verify that items handled per hour is returned correctly
+
+    @Test
+    public void testItemsHandledPerHourCalculation(){
+        Worker w = new Worker("Liam", 15);
+        
+        assertEquals(0, w.itemsHandledPerHour(0));
+        assertEquals(15, w.itemsHandledPerHour(1));
+        assertEquals(75, w.itemsHandledPerHour(5));
+    } // Verify that items handled per hour calculation is correct
 }

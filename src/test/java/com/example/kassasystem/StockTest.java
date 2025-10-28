@@ -9,9 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StockTest {
 
@@ -74,6 +72,41 @@ public class StockTest {
     }
 
     @Test
+    public void testLoadItems_SkipsBlankAndWhitespaceLines(@TempDir Path tempDir) throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "blankLinesTest", ".csv");
+        String data = """
+            Barcode,name,salesTax,price,ageLimit,weight/amount,type
+
+            
+            5012345678900,Product A,HIGH,199900,0,500,WeightItem
+            4006381333931,Product B,LOW,549000,12,100,AmountItem
+            """;
+        Files.writeString(tempFile, data);
+        Stock stock = new Stock(tempFile.toString());
+
+        List<Item> items = stock.getItems();
+        assertEquals(2, items.size());
+        assertEquals("Product A", items.get(0).getName());
+        assertEquals("Product B", items.get(1).getName());
+    }
+
+    @Test
+    public void testLoadItems_SkipsLinesWithLessThanSevenParts(@TempDir Path tempDir) throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "blankLinesTest", ".csv");
+        String data = """
+            Barcode,name,salesTax,price,ageLimit,weight/amount,type
+            5012345678900,Product A,HIGH,199900,0,
+            4006381333931,Product B,LOW,549000,12,100,AmountItem
+            """;
+        Files.writeString(tempFile, data);
+        Stock stock = new Stock(tempFile.toString());
+
+        List<Item> items = stock.getItems();
+        assertEquals(1, items.size());
+        assertEquals("Product B", items.getFirst().getName());
+    }
+
+    @Test
     public void testStockAddWeightedItem(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
@@ -83,8 +116,8 @@ public class StockTest {
         Files.writeString(tempFile, data);
         Stock stock = new Stock(tempFile.toString());
 
-        stock.addWeightedItem(new WeightPriceItem("Product B", SalesTax.LOW, new Money(549000), 100, new EANBarcode("4006381333931")));
-        stock.addWeightedItem(new WeightPriceItem("Product C", SalesTax.LOW, new Money(554000), 200, new EANBarcode("73513537")));
+        stock.addItem(new WeightPriceItem("Product B", SalesTax.LOW, new Money(549000), 100, new EANBarcode("4006381333931")));
+        stock.addItem(new WeightPriceItem("Product C", SalesTax.LOW, new Money(554000), 200, new EANBarcode("73513537")));
         List<Item> items = stock.getItems();
         assertEquals(3, items.size());
         assertEquals("Product B", items.get(1).getName());
@@ -97,7 +130,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockAddAmountItem(@TempDir Path tempDir) throws IOException {
+    public void testStockAddAmountItem_list_AddedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -106,12 +139,13 @@ public class StockTest {
         Files.writeString(tempFile, data);
         Stock stock = new Stock(tempFile.toString());
 
-        AmountPriceItem item = new AmountPriceItem("Product B", SalesTax.MEDIUM, new Money(299900), 18, 50, new EANBarcode("4006381333931"));
-        stock.addAmountItem(item);
+        stock.addItem (new AmountPriceItem("Product B", SalesTax.LOW, new Money(549000), 12, 100, new EANBarcode("4006381333931")));
+        stock.addItem (new AmountPriceItem("Product C", SalesTax.LOW, new Money(554000), 15, 200, new EANBarcode("73513537")));
 
         List<Item> items = stock.getItems();
-        assertEquals(2, items.size());
+        assertEquals(3, items.size());
         assertEquals("Product B", items.get(1).getName());
+        assertEquals("Product C", items.get(2).getName());
 
         boolean deleted = Files.deleteIfExists(tempFile);
         if (!deleted) {
@@ -120,7 +154,48 @@ public class StockTest {
     }
 
     @Test
-    public void testDeleteItem(@TempDir Path tempDir) throws IOException {
+    public void testStockAddAmountItem_list_AddedInFile(@TempDir Path tempDir) throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
+        String data = """
+                Barcode,name,salesTax,price,ageLimit,weight/amount,type
+                5012345678900,Product A,HIGH,199900,0,500,WeightItem
+                """;
+        Files.writeString(tempFile, data);
+        Stock stock = new Stock(tempFile.toString());
+
+        stock.addItem (new AmountPriceItem("Product B", SalesTax.LOW, new Money(549000), 12, 100, new EANBarcode("4006381333931")));
+
+        String fileContents = Files.readString(tempFile);
+        System.out.println(fileContents);
+        assertTrue(fileContents.contains("4006381333931"));
+
+
+        boolean deleted = Files.deleteIfExists(tempFile);
+        if (!deleted) {
+            fail("Could not delete temp file: " + tempFile);
+        }
+    }
+
+    @Test
+    public void testStockAddItem_NullItem_shouldThrowException(@TempDir Path tempDir) throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
+        String data = """
+                Barcode,name,salesTax,price,ageLimit,weight/amount,type
+                5012345678900,Product A,HIGH,199900,0,500,WeightItem
+                """;
+        Files.writeString(tempFile, data);
+        Stock stock = new Stock(tempFile.toString());
+
+        assertThrows(NullPointerException.class, () -> stock.addItem(null));
+
+        boolean deleted = Files.deleteIfExists(tempFile);
+        if (!deleted) {
+            fail("Could not delete temp file: " + tempFile);
+        }
+    }
+
+    @Test
+    public void testStockDeleteItem_DeletedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -130,7 +205,8 @@ public class StockTest {
         Files.writeString(tempFile, data);
         Stock stock = new Stock(tempFile.toString());
 
-        stock.deleteItem(new EANBarcode("4006381333931"));
+        boolean deletedItem = stock.deleteItem(new EANBarcode("4006381333931"));
+        assertTrue(deletedItem);
         List<Item> items = stock.getItems();
         assertEquals(1, items.size());
         assertEquals("Product A", items.getFirst().getName());
@@ -142,7 +218,54 @@ public class StockTest {
     }
 
     @Test
-    public void testGetSpecificAmountPriceItem(@TempDir Path tempDir) throws IOException {
+    public void testStockDeleteItem_DeletedInFile(@TempDir Path tempDir) throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
+        String data = """
+                Barcode,name,salesTax,price,ageLimit,weight/amount,type
+                
+                
+                
+                5012345678900,Product A,HIGH,199900,0,500,WeightItem
+                4006381333931,Product B,LOW,549000,12,100,AmountItem
+                """;
+        Files.writeString(tempFile, data);
+        Stock stock = new Stock(tempFile.toString());
+
+        stock.deleteItem(new EANBarcode("4006381333931"));
+
+        String fileContents = Files.readString(tempFile);
+        assertFalse(fileContents.contains("4006381333931"));
+
+        boolean deleted = Files.deleteIfExists(tempFile);
+        if (!deleted) {
+            fail("Could not delete temp file: " + tempFile);
+        }
+    }
+
+    @Test
+    public void testStockDeleteItem_NotFound(@TempDir Path tempDir) throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
+        String data = """
+                Barcode,name,salesTax,price,ageLimit,weight/amount,type
+                5012345678900,Product A,HIGH,199900,0,500,WeightItem
+                """;
+        Files.writeString(tempFile, data);
+        Stock stock = new Stock(tempFile.toString());
+
+        boolean deletedItem = stock.deleteItem(new EANBarcode("4006381333931"));
+        assertFalse(deletedItem);
+        List<Item> items = stock.getItems();
+        assertEquals(1, items.size());
+        assertEquals("Product A", items.getFirst().getName());
+
+        boolean deleted = Files.deleteIfExists(tempFile);
+        if (!deleted) {
+            fail("Could not delete temp file: " + tempFile);
+        }
+    }
+
+    @Test
+    public void testStockGetSpecificItem(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -152,7 +275,7 @@ public class StockTest {
         Files.writeString(tempFile, data);
         Stock stock = new Stock(tempFile.toString());
 
-        AmountPriceItem item = stock.getAmountItemByBarcode(new EANBarcode("4006381333931"));
+        Item item = stock.getSpecificItemByBarcode(new EANBarcode("4006381333931"));
         assertEquals("Product B", item.getName());
 
         boolean deleted = Files.deleteIfExists(tempFile);
@@ -162,7 +285,7 @@ public class StockTest {
     }
 
     @Test
-    public void testGetSpecificAmountItem_NotFound(@TempDir Path tempDir) throws IOException {
+    public void testStockGetSpecificItem_NotFound(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -171,52 +294,11 @@ public class StockTest {
         Files.writeString(tempFile, data);
         Stock stock = new Stock(tempFile.toString());
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            stock.getAmountItemByBarcode(new EANBarcode("4006381333931"));
-        });
+        assertThrows(IllegalArgumentException.class, () -> stock.getSpecificItemByBarcode(new EANBarcode("4006381333931")));
 
         boolean deleted = Files.deleteIfExists(tempFile);
         if (!deleted) {
             fail("Could not delete temp file: " + tempFile);
         }
     }
-    @Test
-    public void testGetSpecificWeightPriceItem(@TempDir Path tempDir) throws IOException {
-        Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
-        String data = """
-                Barcode,name,salesTax,price,ageLimit,weight/amount,type
-                5012345678900,Product A,HIGH,199900,0,500,WeightItem
-                4006381333931,Product B,LOW,549000,12,100,AmountItem
-                """;
-        Files.writeString(tempFile, data);
-        Stock stock = new Stock(tempFile.toString());
-
-        WeightPriceItem item = stock.getWeightItemByBarcode(new EANBarcode("5012345678900"));
-        assertEquals("Product A", item.getName());
-
-        boolean deleted = Files.deleteIfExists(tempFile);
-        if (!deleted) {
-            fail("Could not delete temp file: " + tempFile);
-        }
-    }
-
-    @Test
-    public void testGetSpecificWeightItem_NotFound(@TempDir Path tempDir) throws IOException {
-        Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
-        String data = """
-                Barcode,name,salesTax,price,ageLimit,weight/amount,type
-                5012345678900,Product A,HIGH,199900,0,500,WeightItem
-                """;
-        Files.writeString(tempFile, data);
-        Stock stock = new Stock(tempFile.toString());
-        assertThrows(IllegalArgumentException.class, () -> {
-            stock.getWeightItemByBarcode(new EANBarcode("4006381333931"));
-        });
-
-        boolean deleted = Files.deleteIfExists(tempFile);
-        if (!deleted) {
-            fail("Could not delete temp file: " + tempFile);
-        }
-    }
-
 }

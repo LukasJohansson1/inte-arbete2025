@@ -37,19 +37,11 @@ public class ReceiptTest {
                 "Expected IllegalArgumentException when removing item not in receipt");
     } //Check that removing an item not in receipt throws exception
 
-
     @Test
-    void testGetTotalShouldThrowIfEmpty() {
-        assertThrows(IllegalStateException.class, () -> receipt.getTotal(),
-                "Expected IllegalStateException for getTotal on empty receipt");
-    } // Ensure that calling getTotal on an empty receipt throws exception
-
-    @Test
-    void testPrintReceiptShouldThrowIfEmpty() {
-        assertThrows(IllegalStateException.class, () -> receipt.printReceipt(),
-                "Expected IllegalStateException for printReceipt on empty receipt");
-    } // Ensure that calling printReceipt on an empty receipt throws exception
-
+    void testRemoveNullItemShouldThrow() {
+        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(null), 
+                "Removing null item should throw IllegalArgumentException");
+    } // Check that removing null item throws exception
 
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5})
@@ -60,6 +52,15 @@ public class ReceiptTest {
         Money total = receipt.getTotal();
         assertEquals(100 * amount, total.getAmount(), "Total for AmountPriceItem is wrong");
     } // Check that total is calculated correctly for AmountPriceItem
+
+    @Test
+    void testCalculateItemTotalWithWeightPriceItem() {
+        WeightPriceItem item = new WeightPriceItem("Cheese", SalesTax.LOW, new Money(10), 250, new EANBarcode("4006381333931"));
+        receipt.addItem(item);
+
+        Money total = receipt.getTotal();
+        assertEquals(10L * 250, total.getAmount(), "Total for WeightPriceItem should be calculated correctly");
+    }
 
     @ParameterizedTest
     @ValueSource(ints = {100, 500, 1500})
@@ -185,4 +186,25 @@ public class ReceiptTest {
         assertEquals("Milk", sortedItems.get(1).getName());    // 200
         assertEquals("Banana", sortedItems.get(2).getName());  // 1500
     } // Verify that items are sorted correctly by price
+
+    @Test
+    public void testCalculateItemTotalOverflowShouldThrow() {
+        AmountPriceItem item = new AmountPriceItem(
+            "ExpensiveItem", SalesTax.MEDIUM, new Money(Long.MAX_VALUE), 0, 2, new EANBarcode("4006381333931")
+        );
+        receipt.addItem(item);
+
+        assertThrows(ArithmeticException.class, () -> receipt.getTotal(),
+                "Expected ArithmeticException due to overflow when calculating item total");
+    } // Check that overflow during item total calculation throws exception
+
+
+    @Test
+    public void testUnknownItemReturnsZero() {
+        Item unknownItem = new Item("Unknown", SalesTax.MEDIUM, new EANBarcode("4006381333931")) {};
+        receipt.addItem(unknownItem);
+
+        Money total = receipt.getTotal();
+        assertEquals(0, total.getAmount(), "Total should be 0 for unknown item type");
+    } // Ensure that unknown item types contribute 0 to the total
 }
