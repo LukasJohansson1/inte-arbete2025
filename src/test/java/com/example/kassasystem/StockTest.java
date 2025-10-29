@@ -195,6 +195,26 @@ public class StockTest {
     }
 
     @Test
+    public void testStockAddItem_DuplicateBarcode_shouldThrowException(@TempDir Path tempDir) throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
+        String data = """
+                Barcode,name,salesTax,price,ageLimit,weight/amount,type
+                5012345678900,Product A,HIGH,199900,0,500,WeightItem
+                """;
+        Files.writeString(tempFile, data);
+        Stock stock = new Stock(tempFile.toString());
+
+        AmountPriceItem duplicateItem = new AmountPriceItem("Product B", SalesTax.LOW, new Money(549000), 12, 100, new EANBarcode("5012345678900"));
+
+        assertThrows(IllegalArgumentException.class, () -> stock.addItem(duplicateItem));
+
+        boolean deleted = Files.deleteIfExists(tempFile);
+        if (!deleted) {
+            fail("Could not delete temp file: " + tempFile);
+        }
+    }
+
+    @Test
     public void testStockDeleteItem_DeletedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """

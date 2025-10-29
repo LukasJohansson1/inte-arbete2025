@@ -17,7 +17,7 @@ public class EANBarcodeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"400638s333931", "5012D45678900", "9638t074", "7351A537", "400638!333931", "7351@537"})
+    @ValueSource(strings = {"+00638133393", "400638s333931", "5012D45678900", "9638t074", "7351A537", "400638!333931", "7351@537"})
     public void testEANBarcodeConstructor_invalidCharacters_throwsException(String code) {
         assertThrows(IllegalArgumentException.class, () -> new EANBarcode(code));
     }
