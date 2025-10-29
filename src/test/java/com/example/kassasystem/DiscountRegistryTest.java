@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DiscountRegistryTest {
 
@@ -106,8 +107,20 @@ public class DiscountRegistryTest {
                 () -> assertEquals(810, discountRegistry.calculateDiscountedPrize(objectToRecieveDiscount1).getAmount()),
                 () -> assertEquals(810, discountRegistry.calculateDiscountedPrize(objectToRecieveDiscount2).getAmount())
         );
-
-
     }
+    @Test
+    public void testCalculateDiscountOfUnknownItemTypeThrowsException(){
+        EANBarcode barcode = new EANBarcode("4006381333931");
+        Item unknownItemType = new Item("unknown", SalesTax.LOW, barcode) {
+        };
 
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            discountRegistry.calculateDiscountedPrize(unknownItemType);
+        });
+
+        String expectedMessage = "Unknown item type";
+        String actualMessage = exception.getMessage();
+
+        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+    }
 }
