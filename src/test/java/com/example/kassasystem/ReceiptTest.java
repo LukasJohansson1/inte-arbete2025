@@ -161,7 +161,7 @@ class ReceiptTest {
     } // Ensure that unknown item types contribute 0 to the total
 
     @Test
-    public void testRemoveItemScenarios() {
+    void testRemoveItemScenarios() {
         // Removing from empty receipt
         AmountPriceItem validItem = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
         assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(validItem), "Removing from empty receipt should throw");
