@@ -16,23 +16,23 @@ public class ReceiptTest {
     private Receipt receipt;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         receipt = new Receipt();
     }
 
     @Test
-    void testAddNullAmountPriceItemShouldThrow() {
+    public void testAddNullAmountPriceItemShouldThrow() {
         assertThrows(IllegalArgumentException.class, () -> receipt.addItem(null));
     } // We already do check for valid amount the creation of AmountPriceItem only need to check for null
 
     @Test
-    void testAddNullWeightPriceItemShouldThrow() {
+    public void testAddNullWeightPriceItemShouldThrow() {
         assertThrows(IllegalArgumentException.class, () -> receipt.addItem(null));
     } // We already do check for valid weight the creation of WeightPriceItem only need to check for null
 
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5})
-    void testGetTotalWithAmountPriceItemParameterized(int amount) {
+    public void testGetTotalWithAmountPriceItemParameterized(int amount) {
         AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, amount, new EANBarcode("4006381333931"));
         receipt.addItem(item);
 
@@ -41,7 +41,7 @@ public class ReceiptTest {
     } // Check that total is calculated correctly for AmountPriceItem
 
     @Test
-    void testCalculateItemTotalWithWeightPriceItem() {
+    public void testCalculateItemTotalWithWeightPriceItem() {
         WeightPriceItem item = new WeightPriceItem("Cheese", SalesTax.LOW, new Money(10), 250, new EANBarcode("4006381333931"));
         receipt.addItem(item);
 
@@ -51,7 +51,7 @@ public class ReceiptTest {
 
     @ParameterizedTest
     @ValueSource(ints = {100, 500, 1500})
-    void testGetTotalWithWeightPriceItem(int weight) {
+    public void testGetTotalWithWeightPriceItem(int weight) {
         WeightPriceItem item = new WeightPriceItem("Banana", SalesTax.LOW, new Money(2), weight, new EANBarcode("4006381333931"));
         receipt.addItem(item);
 
@@ -60,7 +60,7 @@ public class ReceiptTest {
     } // Check that total is calculated correctly for WeightPriceItem
 
     @Test
-    void testGetTotalWithMultipleItems() {
+    public void testGetTotalWithMultipleItems() {
         AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2, new EANBarcode("4006381333931"));
         WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500, new EANBarcode("5012345678900"));
         receipt.addItem(milk);
@@ -71,14 +71,14 @@ public class ReceiptTest {
     } // Check that total is calculated correctly for multiple items
 
     @Test
-    void testAddItemAddsCorrectly() {
+    public void testAddItemAddsCorrectly() {
         AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2, new EANBarcode("4006381333931"));
         receipt.addItem(item);
         assertTrue(receipt.getItems().contains(item), "Item should exist in receipt after addItem");
     } // Verify that addItem actually adds the item to the receipt
 
     @Test
-    void testPrintReceiptOutput() {
+    public void testPrintReceiptOutput() {
         AmountPriceItem milk = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 2, new EANBarcode("4006381333931"));
         WeightPriceItem banana = new WeightPriceItem("Banana", SalesTax.LOW, new Money(3), 500, new EANBarcode("5012345678900"));
         receipt.addItem(milk);
@@ -161,7 +161,7 @@ public class ReceiptTest {
     } // Ensure that unknown item types contribute 0 to the total
 
     @Test
-    void testRemoveItemScenarios() {
+    public void testRemoveItemScenarios() {
         // Removing from empty receipt
         AmountPriceItem validItem = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
         assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(validItem), "Removing from empty receipt should throw");
