@@ -3,18 +3,17 @@ package com.example.kassasystem;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.List;
-import java.util.Map;
 
 public class DiscountRegistry {
 
-    private final Map<Discount, List<Item>> discounts = new TreeMap<>();
+    private final TreeMap<Discount, List<Item>> discounts = new TreeMap<>();
 
     public void addDiscount(Discount discount) {
         discounts.put(discount, discount.getItems());
 
     }
 
-    public Map<Discount, List<Item>> getAllDiscounts() {
+    public TreeMap<Discount, List<Item>> getAllDiscounts() {
         return discounts;
     }
 
@@ -53,7 +52,7 @@ public class DiscountRegistry {
             if (d.getDiscountType() == DiscountType.FIXED_AMOUNT) {
                 result -= d.getValue();
             } else {
-                result -= (result * d.getValue()) / 100;
+                result -= result * d.getValue() / 100;
             }
         }
 
