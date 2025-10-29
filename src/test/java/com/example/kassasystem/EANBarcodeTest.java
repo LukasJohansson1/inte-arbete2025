@@ -32,7 +32,7 @@ public class EANBarcodeTest {
     @ValueSource(strings = {"4006381333931", "5012345678900", "96385074", "73513537"})
     public void testEANBarcodeConstructor_validBarcodes(String code) {
         EANBarcode ean = new EANBarcode(code);
-        assertEquals(code, ean.getCode());
+        assertEquals(code, ean.code());
     }
 
     @Test

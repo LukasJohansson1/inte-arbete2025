@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class DiscountRegistry {
 
-    private Map<Discount, List<Item>> discounts = new TreeMap<>(); 
+    private final Map<Discount, List<Item>> discounts = new TreeMap<>();
 
     public void addDiscount(Discount discount) {
         discounts.put(discount, discount.getItems());
@@ -31,36 +31,32 @@ public class DiscountRegistry {
 
     public Money calculateDiscountedPrize(Item item) { //Varor kan ha flera rabatter, fixed amount appliceras innan procentrabatter.
         ArrayList<Discount> applicableDiscounts = getDiscountsForItem(item);
-        if (item instanceof AmountPriceItem) {
-            long priceResult = ((AmountPriceItem) item).getPrice().getAmount() * ((AmountPriceItem) item).getAmount();
-            if (applicableDiscounts.isEmpty()) {
-                return new Money(priceResult);
-            }
-            for (Discount d : applicableDiscounts) {
-                if (d.getDiscountType() == DiscountType.FIXED_AMOUNT) {
-                    priceResult -= d.getValue();
-                } else {
-                    priceResult -= (priceResult * d.getValue()) / 100;
-                }
-            }
-            return new Money(priceResult);
-        } else  {
-            long priceResult = ((WeightPriceItem) item).getPricePerWeightUnit().getAmount()
-                    * ((WeightPriceItem) item).getWeightInGrams();
-            if (applicableDiscounts.isEmpty()) {
-                return new Money(priceResult);
-            }
-            for (Discount d : applicableDiscounts) {
-                if (d.getDiscountType() == DiscountType.FIXED_AMOUNT) {
-                    priceResult -= d.getValue(); //Fel logik i nuläget, rabatten ignorerar vikten.
-                } else  {
-                    priceResult -= (priceResult * d.getValue()) / 100;
-                }
-            }
-            return new Money(priceResult);
+        long priceResult;
+        if (item instanceof AmountPriceItem amountItem) {
+            priceResult = amountItem.getPrice().getAmount() * amountItem.getAmount();
+        } else if (item instanceof WeightPriceItem weightItem) {
+            priceResult = weightItem.getPricePerWeightUnit().getAmount() * weightItem.getWeightInGrams();
+        } else {
+            throw new IllegalArgumentException("Unknown item type: " + item.getClass());
         }
 
+        // Apply discounts
+        priceResult = applyDiscounts(priceResult, applicableDiscounts);
 
+        return new Money(priceResult);
     }
 
+    private long applyDiscounts(long price, List<Discount> discounts) {
+        long result = price;
+
+        for (Discount d : discounts) {
+            if (d.getDiscountType() == DiscountType.FIXED_AMOUNT) {
+                result -= d.getValue();
+            } else {
+                result -= (result * d.getValue()) / 100;
+            }
+        }
+
+        return result;
+    }
 }

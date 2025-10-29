@@ -1,13 +1,14 @@
 package com.example.kassasystem;
 
-public class EANBarcode {
+/**
+ * @param code Sparar barcoden i string format
+ */
+public record EANBarcode(String code) {
 
     private static final int SHORT_EAN_LENGTH = 8;
     private static final int LONG_EAN_LENGTH = 13;
-    
-    private final String code; // Sparar barcoden i string format
 
-    public EANBarcode(String code) {
+    public EANBarcode {
         if (code == null) {
             throw new IllegalArgumentException("The barcode can not be null");
         }
@@ -16,26 +17,7 @@ public class EANBarcode {
         validateOnlyDigits(code);
         validateCheckDigit(code);
 
-        this.code = code;
     }
-
-    public String getCode() {
-        return code;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        EANBarcode other = (EANBarcode) obj;
-        return code.equals(other.getCode());
-    }
-
-    @Override
-    public int hashCode() {
-        return code.hashCode();
-    }
-
 
     private void validateLength(String code) {
         if (code.length() != SHORT_EAN_LENGTH && code.length() != LONG_EAN_LENGTH) {
@@ -61,7 +43,7 @@ public class EANBarcode {
         int checkSum = 0;
         int weight;
 
-        for (int i=0; i < lastDigitIndex; i++) {
+        for (int i = 0; i < lastDigitIndex; i++) {
             weight = getIndexWeight(code, i);
             checkSum += Character.getNumericValue(code.charAt(i)) * weight;
         }
