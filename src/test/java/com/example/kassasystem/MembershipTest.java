@@ -288,5 +288,4 @@ class MembershipTest {
         membership.decreaseBothTypesOfPoints(points);
         assertEquals(tier, membership.getTier());
     }
-
 }

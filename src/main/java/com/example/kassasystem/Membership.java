@@ -139,5 +139,4 @@ public class Membership {
         decreaseTotalPoints(points);
         decreaseAvailablePoints(points);
     }
-
 }

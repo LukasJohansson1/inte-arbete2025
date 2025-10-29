@@ -25,7 +25,6 @@ class MembershipRegistryTest {
         "John", "Eriksson", "Kyrkgränd 14",
 "20020305-5523", "0739654522", "JohnEriksson@hotmail.com"
         );
-
         membershipRegistry.addMember(customer);
         assertTrue(membershipRegistry.hasTier(customer.getMembershipTier()));
         List<Customer> bronzeMembers = membershipRegistry.getMembersInTier(customer.getMembershipTier());
@@ -49,7 +48,6 @@ class MembershipRegistryTest {
         List<Customer> members = membershipRegistry.getMembersInTier(customer.getMembershipTier());
         assertTrue(members.contains(customer));
         assertEquals(tier, customer.getMembershipTier());
-
     }
 
     @ParameterizedTest
