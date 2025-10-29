@@ -2,11 +2,11 @@ package com.example.kassasystem;
 
 public abstract class Item {
 
-    private String name;
-    private SalesTax salesTax;
-    private EANBarcode barcode;
+    private final String name;
+    private final SalesTax salesTax;
+    private final EANBarcode barcode;
 
-    public Item(String name, SalesTax salesTax, EANBarcode barcode) {
+    protected Item(String name, SalesTax salesTax, EANBarcode barcode) {
         if (name == null) {
             throw new IllegalArgumentException("Name can not be null");
         }

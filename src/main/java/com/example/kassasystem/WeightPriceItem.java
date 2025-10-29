@@ -2,7 +2,7 @@ package com.example.kassasystem;
 
 public class WeightPriceItem extends Item {
     
-    private Money pricePerWeightUnit;
+    private final Money pricePerWeightUnit;
     private int weightInGrams;
 
     public WeightPriceItem(String name, SalesTax salesTax, Money pricePerWeightUnit, int weightInGrams, EANBarcode barcode) { // Constructor
