@@ -76,13 +76,13 @@ public class Stock {
         String data;
         Objects.requireNonNull(item, "Item cannot be null");
         for (Item existingItem : itemList) {
-            if (existingItem.getBarcode().getCode().equals(item.getBarcode().getCode())) {
+            if (existingItem.getBarcode().code().equals(item.getBarcode().code())) {
                 throw new IllegalArgumentException("Item with the same barcode already exists");
             }
         }
         if (item instanceof WeightPriceItem) {
             data = String.format("%n%s,%s,%s,%s,%d,%d,%s",
-                    item.getBarcode().getCode(),
+                    item.getBarcode().code(),
                     item.getName(),
                     item.getSalesTax(),
                     ((WeightPriceItem) item).getPricePerWeightUnit(),
@@ -91,7 +91,7 @@ public class Stock {
         }
         else {
             data = String.format("%n%s,%s,%s,%s,%d,%d,%s",
-                    item.getBarcode().getCode(),
+                    item.getBarcode().code(),
                     item.getName(),
                     item.getSalesTax(),
                     ((AmountPriceItem) item).getPrice(),
@@ -110,7 +110,7 @@ public class Stock {
     public boolean deleteItem(EANBarcode barcode) throws IOException {
         Item itemToDelete = null;
         for (Item item : itemList) {
-            if (item.getBarcode().getCode().equals(barcode.getCode())) {
+            if (item.getBarcode().code().equals(barcode.code())) {
                 itemToDelete = item;
                 break;
             }
@@ -125,7 +125,7 @@ public class Stock {
                     continue; // skip blanks when rewriting
                 }
                 String firstColumn = line.split(",", -1)[0].trim();
-                if (!firstColumn.equals(barcode.getCode())) {
+                if (!firstColumn.equals(barcode.code())) {
                     updatedLines.add(line);
                 }
             }
