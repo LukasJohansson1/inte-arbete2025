@@ -1,6 +1,6 @@
 package com.example.kassasystem;
 
 public enum DiscountType {
-    PERCENTILE,
-    FIXED_AMOUNT;
+    FIXED_AMOUNT,
+    PERCENTILE;
 }

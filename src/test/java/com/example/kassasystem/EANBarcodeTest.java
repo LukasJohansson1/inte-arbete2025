@@ -2,14 +2,11 @@ package com.example.kassasystem;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class EANBarcodeTest {
 
@@ -20,7 +17,7 @@ public class EANBarcodeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"400638s333931", "5012D45678900", "9638t074", "7351A537", "400638!333931", "7351@537"})
+    @ValueSource(strings = {"+00638133393", "400638s333931", "5012D45678900", "9638t074", "7351A537", "400638!333931", "7351@537"})
     public void testEANBarcodeConstructor_invalidCharacters_throwsException(String code) {
         assertThrows(IllegalArgumentException.class, () -> new EANBarcode(code));
     }
@@ -59,19 +56,19 @@ public class EANBarcodeTest {
     @ParameterizedTest
     @ValueSource(strings = {"4006381333931", "5012345678900", "96385074", "73513537"})
     public void testEquals_differentCodes_notEquals(String code) {
-        assertNotEquals(new EANBarcode("4003994155486"), new EANBarcode(code));
+        assertFalse(new EANBarcode("4003994155486").equals(new EANBarcode(code)));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"4006381333931", "5012345678900", "96385074", "73513537"})
     public void testEquals_differentType_notEquals(String code) {
-        assertNotEquals(code, new EANBarcode(code));
+        assertFalse(new EANBarcode(code).equals(code));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"4006381333931", "5012345678900", "96385074", "73513537"})
     public void testEquals_null_notEquals(String code) {
-        assertNotEquals(null, new EANBarcode(code));
+        assertFalse(new EANBarcode(code).equals(null));
     }
 
     @ParameterizedTest

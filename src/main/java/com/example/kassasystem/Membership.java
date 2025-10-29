@@ -65,18 +65,16 @@ public class Membership {
     }
 
     public void changeTier(int points) {
-        if (points < 5000 && (!tier.equals("Bronze"))) {
+        if (points < 5000) {
             tier = "Bronze";
         }
-        else if (points < 10000 && (!tier.equals("Silver"))) {
+        else if (points < 10000) {
             tier = "Silver";
         }
-        else if (points < 25000 && (!tier.equals("Gold"))) {
+        else if (points < 25000) {
             tier = "Gold";
         }
-        else if (points >= 25000 && (!tier.equals("Platinum"))) {
-            tier = "Platinum";
-        }
+        else tier = "Platinum";
     }
 
     //fixa kodupprepning

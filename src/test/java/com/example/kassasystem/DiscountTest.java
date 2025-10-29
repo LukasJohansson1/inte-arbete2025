@@ -2,7 +2,6 @@ package com.example.kassasystem;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.Assert.*;
@@ -83,10 +82,16 @@ public class DiscountTest {
     @ValueSource(ints = {1001, 2000})
     public void testCreateFixedAmountDiscountExceedingItemPriceThrowsException(int fixedAmount){
         EANBarcode barcode = new EANBarcode("4006381333931");
-        AmountPriceItem objectToRecieveDiscount = new AmountPriceItem("name", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Discount("Discount name", DiscountType.FIXED_AMOUNT, fixedAmount, objectToRecieveDiscount);
-        });
+        AmountPriceItem objectToRecieveDiscount1 = new AmountPriceItem("name", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
+        WeightPriceItem objectToRecieveDiscount2 = new WeightPriceItem("name", SalesTax.LOW, new Money(1000), 1, barcode); 
+        assertAll("Creating fixed amount discount exceeding item price throws exception",
+            () -> assertThrows(IllegalArgumentException.class, () -> {
+                new Discount("Discount name", DiscountType.FIXED_AMOUNT, fixedAmount, objectToRecieveDiscount1);
+            }),
+            () -> assertThrows(IllegalArgumentException.class, () -> {
+                new Discount("Discount name", DiscountType.FIXED_AMOUNT, fixedAmount, objectToRecieveDiscount2);
+            })
+        );
     }
 
     @Test
@@ -98,5 +103,24 @@ public class DiscountTest {
         );      
     }
 
+    @Test
+    public void testCreateDiscountWithNullType_ThrowsException(){
+        EANBarcode barcode = new EANBarcode("4006381333931");
+        AmountPriceItem objectToRecieveDiscount1 = new AmountPriceItem("name", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Discount("Discount name", null, 10, objectToRecieveDiscount1);
+        });
+    } 
+
+    @Test
+    public void testDiscountCompareTo(){
+        EANBarcode barcode = new EANBarcode("4006381333931");
+        AmountPriceItem objectToRecieveDiscount  = new AmountPriceItem("name", SalesTax.LOW, new Money(1000), 0, 1, barcode); 
+        Discount discount1 = new Discount("Discount name", DiscountType.PERCENTILE, 10, objectToRecieveDiscount);
+        Discount discount2 = new Discount("Discount name", DiscountType.FIXED_AMOUNT , 20, objectToRecieveDiscount);
+        assertTrue(discount1.compareTo(discount2) > 0);
+    }
+
+    
 
 }

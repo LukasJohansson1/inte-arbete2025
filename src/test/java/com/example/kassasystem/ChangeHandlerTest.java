@@ -1,16 +1,21 @@
 package com.example.kassasystem;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 
-public class ChangeTest {
+
+public class ChangeHandlerTest {
+
+    private ChangeHandler changeHandler;
+
+    @BeforeEach
+    public void setUp(){
+        changeHandler = new ChangeHandler();
+    }
 
     @Test
     public void testExchangeMoney_Valid(){
@@ -19,7 +24,7 @@ public class ChangeTest {
 
         Money expectedResult = new Money(10000);
 
-        assertEquals(expectedResult.getAmount(), Change.exchangeMoney(price, paid).getAmount());
+        assertEquals(expectedResult.getAmount(), changeHandler.exchangeMoney(price, paid).getAmount());
     }
 
     @Test
@@ -28,7 +33,7 @@ public class ChangeTest {
         Money paid = new Money(5000);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            Change.exchangeMoney(price, paid);
+            changeHandler.exchangeMoney(price, paid);
         });
     }
 
@@ -38,7 +43,7 @@ public class ChangeTest {
         Money paid = new Money(0);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            Change.exchangeMoney(price, paid);
+            changeHandler.exchangeMoney(price, paid);
         });
     }
 
@@ -49,7 +54,7 @@ public class ChangeTest {
 
         Money expectedResult = new Money(0);
 
-        assertEquals(expectedResult.getAmount(), Change.exchangeMoney(price, paid).getAmount());
+        assertEquals(expectedResult.getAmount(), changeHandler.exchangeMoney(price, paid).getAmount());
     }
 
 }

@@ -5,7 +5,7 @@ public class EANBarcode {
     private static final int SHORT_EAN_LENGTH = 8;
     private static final int LONG_EAN_LENGTH = 13;
     
-    private final String code;
+    private final String code; // Sparar barcoden i string format
 
     public EANBarcode(String code) {
         if (code == null) {
@@ -44,14 +44,12 @@ public class EANBarcode {
     }
 
     private void validateOnlyDigits(String code) {
-        try {
-            Long.parseLong(code);
-        } catch (NumberFormatException e) {
+        if (!code.matches("\\d+")) {
             throw new IllegalArgumentException("The barcode must consist of digits only");
         }
     }
 
-    private void validateCheckDigit(String code) {
+    private void validateCheckDigit(String code) {  // Räknar ut om kontrollsiffran är korrekt enligt EAN-standard
         int lastDigitIndex;
 
         if (code.length() == LONG_EAN_LENGTH) {
@@ -79,7 +77,7 @@ public class EANBarcode {
         return (checkSum + 9) / 10 * 10 - checkSum;
     }
 
-    private int getIndexWeight(String code, int i) {
+    private int getIndexWeight(String code, int i) { // Hämtar weight för varje position i talet enligt EAN-standard
         if (code.length() == LONG_EAN_LENGTH) {
             return i % 2 == 0 ? 1 : 3;
         } else {

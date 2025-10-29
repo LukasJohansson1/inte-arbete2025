@@ -1,11 +1,11 @@
 package com.example.kassasystem;
 
-public class Change {
+public class ChangeHandler {
 
 
     //Returnerar ett nytt money-objekt som representerar växeln
     //Ska även returnera tomt money-objekt ifall paid == price
-    public static Money exchangeMoney(Money price, Money paid) {
+    public Money exchangeMoney(Money price, Money paid) {
         if (paid.getAmount() < 1) {
             throw new IllegalArgumentException("Paid amount must be at least 1 unit");
         }
