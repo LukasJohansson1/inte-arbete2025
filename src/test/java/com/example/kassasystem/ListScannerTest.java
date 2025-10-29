@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class ListScannerTest {
+class ListScannerTest {
 
     // Testdata
     private static final Item ITEM_1 = new AmountPriceItem("1", SalesTax.MEDIUM, new Money(0), 0, 1, new EANBarcode("42853718"));
@@ -46,51 +46,53 @@ public class ListScannerTest {
     }
 
     @Test
-    public void testConstructor_StockNull_throwsException() {
-        assertThrows(IllegalArgumentException.class, () -> new ListScanner(new ArrayList<>(), null));
+    void testConstructor_StockNull_throwsException() {
+        List<String> list = new ArrayList<>();
+        assertThrows(IllegalArgumentException.class, () -> new ListScanner(list, null));
     }
 
     @Test
-    public void testConstructor_ListNull_throwsException() throws IOException{
-        assertThrows(IllegalArgumentException.class, () -> new ListScanner(null, createTestStock()));
+    void testConstructor_ListNull_throwsException() throws IOException {
+        Stock stock = createTestStock();
+        assertThrows(IllegalArgumentException.class, () -> new ListScanner(null, stock));
     }
 
     // För denna skanner räknas en misslyckad scan om listan är tom eller objektet är null
     @Test
-    public void testScan_FailedScanning_throwsException() throws IOException {
+    void testScan_FailedScanning_throwsException() throws IOException {
         List<String> listWithNull = new ArrayList<>();
         listWithNull.add(null);
         ListScanner scanner = new ListScanner(listWithNull, createTestStock());
-        assertThrows(IllegalArgumentException.class, () -> scanner.scan());
-        assertThrows(IllegalArgumentException.class, () -> scanner.scan());
+        assertThrows(IllegalArgumentException.class, scanner::scan);
+        assertThrows(IllegalArgumentException.class, scanner::scan);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"8901234567891", "asfasf", "23456780", "<>-.,,"})
-    public void testScan_invalidBarcode_throwsException(String barcode) throws IOException {
+    void testScan_invalidBarcode_throwsException(String barcode) throws IOException {
         List<String> listToScan = new ArrayList<>(List.of(barcode));
         ListScanner scanner = new ListScanner(listToScan, createTestStock());
-        assertThrows(IllegalArgumentException.class, () -> scanner.scan());
+        assertThrows(IllegalArgumentException.class, scanner::scan);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"30927797", "57263168", "8756034956074", "4487212738659"})
-    public void testScan_noItemWithBarcodeInStock_throwsException(String barcode) throws IOException {
+    void testScan_noItemWithBarcodeInStock_throwsException(String barcode) throws IOException {
         List<String> listToScan = new ArrayList<>(List.of(barcode));
         ListScanner scanner = new ListScanner(listToScan, createTestStock());
-        assertThrows(NoSuchElementException.class, () -> scanner.scan());
+        assertThrows(NoSuchElementException.class, scanner::scan);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"42853718", "5355637570514", "6463362596385", "11404194"})
-    public void testScan_validBarcodes_works(String barcode) throws IOException {
+    void testScan_validBarcodes_works(String barcode) throws IOException {
         List<String> listToScan = new ArrayList<>(List.of(barcode));
         ListScanner scanner = new ListScanner(listToScan, createTestStock());
         assertEquals(scanner.scan().getBarcode(), new EANBarcode(barcode));
     }
 
     @Test
-    public void testScan_NullObject_getRemovedFromList() throws IOException {
+    void testScan_NullObject_getRemovedFromList() throws IOException {
         String barcodeString = "42853718";
         List<String> listToScan = new ArrayList<>();
         listToScan.add(null);
@@ -98,37 +100,43 @@ public class ListScannerTest {
         ListScanner scanner = new ListScanner(listToScan, createTestStock());
         try {
             scanner.scan();
-        } catch (IllegalArgumentException e) {} // Vi bryr oss inte om felet, vi vill bara se vad som händer vid scannen efter
+        } catch (IllegalArgumentException e) { 
+            // Vi bryr oss inte om felet, vi vill bara se vad som händer vid scannen efter 
+        } 
         
         assertEquals(scanner.scan().getBarcode(), new EANBarcode(barcodeString));
     }
 
     @Test
-    public void testScan_invalidBarcode_getRemovedFromList() throws IOException {
+    void testScan_invalidBarcode_getRemovedFromList() throws IOException {
         String barcodeString = "42853718";
         List<String> listToScan = new ArrayList<>(List.of("8901234567891", barcodeString));
         ListScanner scanner = new ListScanner(listToScan, createTestStock());
         try {
             scanner.scan();
-        } catch (IllegalArgumentException e) {} // Vi bryr oss inte om felet, vi vill bara se vad som händer vid scannen efter
+        } catch (IllegalArgumentException e) { 
+            // Vi bryr oss inte om felet, vi vill bara se vad som händer vid scannen efter 
+        }
 
         assertEquals(scanner.scan().getBarcode(), new EANBarcode(barcodeString));
     }
 
     @Test
-    public void testScan_noItemWithBarcodeInStock_getRemovedFromList() throws IOException {
+    void testScan_noItemWithBarcodeInStock_getRemovedFromList() throws IOException {
         String barcodeString = "42853718";
         List<String> listToScan = new ArrayList<>(List.of("30927797", barcodeString));
         ListScanner scanner = new ListScanner(listToScan, createTestStock());
         try {
             scanner.scan();
-        } catch (NoSuchElementException e) {} // Vi bryr oss inte om felet, vi vill bara se vad som händer vid scannen efter
+        } catch (NoSuchElementException e) { 
+            // Vi bryr oss inte om felet, vi vill bara se vad som händer vid scannen efter 
+        }
 
         assertEquals(scanner.scan().getBarcode(), new EANBarcode(barcodeString));
     }
 
     @Test
-    public void testScan_validBarcode_getRemovedFromList() throws IOException {
+    void testScan_validBarcode_getRemovedFromList() throws IOException {
         String barcodeString = "42853718";
         List<String> listToScan = new ArrayList<>(List.of("53075284", barcodeString));
         ListScanner scanner = new ListScanner(listToScan, createTestStock());
