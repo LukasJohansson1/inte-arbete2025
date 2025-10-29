@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StockTest {
 
     @Test
-    public void testStockConstructor_LoadsItems(@TempDir Path tempDir) throws IOException {
+    void testStockConstructor_LoadsItems(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -36,12 +36,12 @@ public class StockTest {
     }
 
     @Test
-    public void testStockConstructor_InvalidFilePath_shouldThrowError() {
+    void testStockConstructor_InvalidFilePath_shouldThrowError() {
         assertThrows(RuntimeException.class, () -> new Stock("invalid_path.csv"));
     }
 
     @Test
-    public void testStockConstructor_EmptyFile(@TempDir Path tempDir) throws IOException {
+    void testStockConstructor_EmptyFile(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "emptyDataTest", ".csv");
         Stock stock = new Stock(tempFile.toString());
 
@@ -55,7 +55,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockConstructor_MalformedData(@TempDir Path tempDir) throws IOException {
+    void testStockConstructor_MalformedData(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "malformedDataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -72,7 +72,7 @@ public class StockTest {
     }
 
     @Test
-    public void testLoadItems_SkipsBlankAndWhitespaceLines(@TempDir Path tempDir) throws IOException {
+    void testLoadItems_SkipsBlankAndWhitespaceLines(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "blankLinesTest", ".csv");
         String data = """
             Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -91,7 +91,7 @@ public class StockTest {
     }
 
     @Test
-    public void testLoadItems_SkipsLinesWithLessThanSevenParts(@TempDir Path tempDir) throws IOException {
+    void testLoadItems_SkipsLinesWithLessThanSevenParts(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "blankLinesTest", ".csv");
         String data = """
             Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -107,7 +107,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockAddWeightedItem(@TempDir Path tempDir) throws IOException {
+    void testStockAddWeightedItem_AddedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -130,7 +130,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockAddAmountItem_list_AddedInList(@TempDir Path tempDir) throws IOException {
+    void testStockAddAmountItem_AddedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -154,7 +154,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockAddAmountItem_list_AddedInFile(@TempDir Path tempDir) throws IOException {
+    void testStockAddAmountItem_AddedInFile(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -177,7 +177,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockAddItem_NullItem_shouldThrowException(@TempDir Path tempDir) throws IOException {
+    void testStockAddItem_NullItem_shouldThrowException(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -195,7 +195,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockAddItem_DuplicateBarcode_shouldThrowException(@TempDir Path tempDir) throws IOException {
+    void testStockAddItem_DuplicateBarcode_shouldThrowException(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -215,7 +215,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockDeleteItem_DeletedInList(@TempDir Path tempDir) throws IOException {
+    void testStockDeleteItem_DeletedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -238,7 +238,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockDeleteItem_DeletedInFile(@TempDir Path tempDir) throws IOException {
+    void testStockDeleteItem_DeletedInFile(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -263,7 +263,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockDeleteItem_NotFound(@TempDir Path tempDir) throws IOException {
+    void testStockDeleteItem_NotFound(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -285,7 +285,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockGetSpecificItem(@TempDir Path tempDir) throws IOException {
+    void testStockGetSpecificItem(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -305,7 +305,7 @@ public class StockTest {
     }
 
     @Test
-    public void testStockGetSpecificItem_NotFound(@TempDir Path tempDir) throws IOException {
+    void testStockGetSpecificItem_NotFound(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
