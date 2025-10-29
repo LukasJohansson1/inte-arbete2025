@@ -10,17 +10,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MembershipRegistryTest {
+class MembershipRegistryTest {
 
     private MembershipRegistry membershipRegistry;
 
     @BeforeEach
-    public void SetUp() {
+    void SetUp() {
         membershipRegistry = new MembershipRegistry();
     }
 
     @Test
-    public void addMember_shouldStoreInCorrectTier() {
+    void addMember_shouldStoreInCorrectTier() {
         Customer customer = new Customer(
         "John", "Eriksson", "Kyrkgränd 14",
 "20020305-5523", "0739654522", "JohnEriksson@hotmail.com"
@@ -38,7 +38,7 @@ public class MembershipRegistryTest {
             "10000, Gold",
             "25000, Platinum"
     })
-    public void addMemberWithPoints_shouldStoreInCorrectTier(int points, String tier) {
+    void addMemberWithPoints_shouldStoreInCorrectTier(int points, String tier) {
         Customer customer = new Customer(
             "John", "Eriksson", "Kyrkgränd 14",
         "20020305-5523", "0739654522", "JohnEriksson@hotmail.com", points
@@ -54,7 +54,7 @@ public class MembershipRegistryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"Bronze", "Silver", "Gold", "Platinum"})
-    public void addMemberWithTier_shouldStoreInCorrectTier(String tier) {
+    void addMemberWithTier_shouldStoreInCorrectTier(String tier) {
         Customer customer = new Customer(
                 "John", "Eriksson", "Kyrkgränd 14",
                 "20020305-5523", "0739654522", "JohnEriksson@hotmail.com", tier

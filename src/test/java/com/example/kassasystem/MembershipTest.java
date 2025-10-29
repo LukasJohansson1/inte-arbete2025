@@ -8,46 +8,46 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MembershipTest {
+class MembershipTest {
 
     @Test
-    public void testEmptyConstructor_shouldSetTierToBronze() {
+    void testEmptyConstructor_shouldSetTierToBronze() {
         Membership membership = new Membership();
         assertEquals("Bronze", membership.getTier());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {-1, -9867, Integer.MIN_VALUE})
-    public void testConstructor_withNegativePoints_shouldThrowException(int points) {
+    void testConstructor_withNegativePoints_shouldThrowException(int points) {
         assertThrows(IllegalArgumentException.class, () -> {
-            Membership membership = new Membership(points);
+            new Membership(points);
         });
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1243, 4999})
-    public void testConstructor_withPointsBetween0And4999_shouldGiveBronzeTier(int points) {
+    void testConstructor_withPointsBetween0And4999_shouldGiveBronzeTier(int points) {
         Membership membership = new Membership(points);
         assertEquals("Bronze", membership.getTier());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {5000, 6789, 9999})
-    public void testConstructor_withPointsBetween5000And9999_shouldGiveSilverTier(int points) {
+    void testConstructor_withPointsBetween5000And9999_shouldGiveSilverTier(int points) {
         Membership membership = new Membership(points);
         assertEquals("Silver", membership.getTier());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {10000, 23456, 24999})
-    public void testConstructor_withPointsBetween10000And9999_shouldGiveGoldTier(int points) {
+    void testConstructor_withPointsBetween10000And9999_shouldGiveGoldTier(int points) {
         Membership membership = new Membership(points);
         assertEquals("Gold", membership.getTier());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {25000, 234567, Integer.MAX_VALUE})
-    public void testConstructor_withPointsAbove250000_shouldGivePlatinumTier(int points) {
+    void testConstructor_withPointsAbove250000_shouldGivePlatinumTier(int points) {
         Membership membership = new Membership(points);
         assertEquals("Platinum", membership.getTier());
     }
@@ -59,34 +59,34 @@ public class MembershipTest {
             "Gold, 10000",
             "Platinum, 25000"
     })
-    public void testConstructor_withTier_shouldSetTotalPointsBasedOnTier(String tier, int points) {
+    void testConstructor_withTier_shouldSetTotalPointsBasedOnTier(String tier, int points) {
         Membership membership = new Membership(tier);
         assertEquals(points, membership.getTotalPoints());
     }
 
     @Test
-    public void testConstructor_withInvalidTier_shouldThrowException() {
+    void testConstructor_withInvalidTier_shouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            Membership membership = new Membership("notATier");
+            new Membership("notATier");
         });
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"Bronze", "Silver", "Gold", "Platinum" })
-    public void testConstructor_withTier_shouldSetCorrectTier(String tier) {
+    void testConstructor_withTier_shouldSetCorrectTier(String tier) {
         Membership membership = new Membership(tier);
         assertEquals(tier, membership.getTier());
     }
 
     @Test
-    public void increaseTotalPointsByAPositiveNumber() {
+    void increaseTotalPointsByAPositiveNumber() {
         Membership membership = new Membership();
         membership.increaseTotalPoints(500);
         assertEquals(500, membership.getTotalPoints());
     }
 
     @Test
-    public void increaseTotalPointsWithANegativeNumber_shouldThrowException() {
+    void increaseTotalPointsWithANegativeNumber_shouldThrowException() {
         Membership membership = new Membership();
         assertThrows(IllegalArgumentException.class, () -> {
             membership.increaseTotalPoints(-500);
@@ -94,7 +94,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void increaseTotalPointsAboveMAX_VALUE_shouldThrowException() {
+    void increaseTotalPointsAboveMAX_VALUE_shouldThrowException() {
         Membership membership = new Membership(Integer.MAX_VALUE);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.increaseTotalPoints(1);
@@ -102,14 +102,14 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseTotalPointsByAPositiveNumber() {
+    void decreaseTotalPointsByAPositiveNumber() {
         Membership membership = new Membership(10000);
         membership.decreaseTotalPoints(500);
         assertEquals(9500, membership.getTotalPoints());
     }
 
     @Test
-    public void decreaseTotalPointsByANegativeNumber_shouldThrowException() {
+    void decreaseTotalPointsByANegativeNumber_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.decreaseTotalPoints(-500);
@@ -117,7 +117,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseTotalPointsBeyond0_shouldThrowException() {
+    void decreaseTotalPointsBeyond0_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.decreaseTotalPoints(10001);
@@ -125,14 +125,14 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseAvailablePoints_byAValidAmount() {
+    void decreaseAvailablePoints_byAValidAmount() {
         Membership membership = new Membership(10000);
         membership.decreaseAvailablePoints(500);
         assertEquals(9500, membership.getAvailablePoints());
     }
 
     @Test
-    public void decreaseAvailablePointsByaNegativeNumber_shouldThrowException() {
+    void decreaseAvailablePointsByaNegativeNumber_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.decreaseAvailablePoints(-500);
@@ -140,7 +140,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseAvailablePointsBelow0_shouldThrowException() {
+    void decreaseAvailablePointsBelow0_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.decreaseAvailablePoints(10001);
@@ -151,9 +151,10 @@ public class MembershipTest {
     @CsvSource({
             "5000, Silver",
             "10000, Gold",
-            "25000, Platinum"
+            "25000, Platinum",
+
     })
-    public void totalPointsIncreasingToThresholdForNextTier_shouldIncreaseTier(int points, String tier) {
+    void totalPointsIncreasingToThresholdForNextTier_shouldIncreaseTier(int points, String tier) {
         Membership membership = new Membership();
         membership.increaseTotalPoints(points);
         assertEquals(tier, membership.getTier());
@@ -165,7 +166,7 @@ public class MembershipTest {
             "15001, Silver",
             "20001, Bronze"
     })
-    public void totalPointsDecreasingToThresholdForLowerTier_shouldDecreaseTier(int points, String tier) {
+    void totalPointsDecreasingToThresholdForLowerTier_shouldDecreaseTier(int points, String tier) {
         Membership membership = new Membership(25000);
         membership.decreaseTotalPoints(points);
         assertEquals(tier, membership.getTier());
@@ -178,21 +179,21 @@ public class MembershipTest {
             "24999, Gold",
             "25001, Platinum"
     })
-    public void totalPointsIncreasingToBelowThreshold_shouldStayInSameTier(int points, String tier) {
+    void totalPointsIncreasingToBelowThreshold_shouldStayInSameTier(int points, String tier) {
         Membership membership = new Membership();
         membership.increaseTotalPoints(points);
         assertEquals(tier, membership.getTier());
     }
 
     @Test
-    public void increaseAvailablePoints() {
+    void increaseAvailablePoints() {
         Membership membership = new Membership(10000);
         membership.increaseAvailablePoints(1000);
         assertEquals(11000, membership.getAvailablePoints());
     }
 
     @Test
-    public void increaseAvailablePointsByANegativeNumber_shouldThrowException() {
+    void increaseAvailablePointsByANegativeNumber_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.increaseAvailablePoints(-1);
@@ -200,7 +201,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void increaseAvailablePointsAboveMAX_Value_shouldThrowException() {
+    void increaseAvailablePointsAboveMAX_Value_shouldThrowException() {
         Membership membership = new Membership(Integer.MAX_VALUE);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.increaseAvailablePoints(1);
@@ -208,7 +209,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void increaseBothTypesOfPointsByAPositiveAmount() {
+    void increaseBothTypesOfPointsByAPositiveAmount() {
         Membership membership = new Membership(0);
         membership.increaseBothTypesOfPoints(10000);
         assertEquals(10000, membership.getAvailablePoints());
@@ -216,7 +217,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void increaseBothTypesOfPointsByAPositiveAmount_bothPointsStartWithDifferentAmounts() {
+    void increaseBothTypesOfPointsByAPositiveAmount_bothPointsStartWithDifferentAmounts() {
         Membership membership = new Membership(10000);
         membership.decreaseAvailablePoints(5000);
         membership.increaseBothTypesOfPoints(10000);
@@ -225,7 +226,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void increaseBothTypesOfPointsByANegativeValue_shouldThrowException() {
+    void increaseBothTypesOfPointsByANegativeValue_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.increaseBothTypesOfPoints(-1000);
@@ -233,7 +234,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void increaseBothTypesOfPointsAboveMAX_Value_shouldThrowException() {
+    void increaseBothTypesOfPointsAboveMAX_Value_shouldThrowException() {
         Membership membership = new Membership(Integer.MAX_VALUE);
         assertThrows(IllegalArgumentException.class, () -> {
            membership.increaseBothTypesOfPoints(1);
@@ -241,7 +242,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseBothTypesOfPoints() {
+    void decreaseBothTypesOfPoints() {
         Membership membership = new Membership(10000);
         membership.decreaseBothTypesOfPoints(5000);
         assertEquals(5000, membership.getTotalPoints());
@@ -249,7 +250,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseBothTypesOfPointsWithANegativeValue_shouldThrowException() {
+    void decreaseBothTypesOfPointsWithANegativeValue_shouldThrowException() {
         Membership membership = new Membership(10000);
         assertThrows(IllegalArgumentException.class, () -> {
             membership.decreaseBothTypesOfPoints(-1000);
@@ -257,7 +258,7 @@ public class MembershipTest {
     }
 
     @Test
-    public void decreaseBothTypesOfPointsBelow0_shouldThrowException() {
+    void decreaseBothTypesOfPointsBelow0_shouldThrowException() {
         Membership membership = new Membership(0);
         assertThrows(IllegalArgumentException.class, () -> {
            membership.decreaseBothTypesOfPoints(1);
@@ -270,7 +271,7 @@ public class MembershipTest {
             "10000, Gold",
             "25000, Platinum"
     })
-    public void increaseBothTypesOfPoints_totalPointsReachesThresholdForNewTier_tierShouldIncrease(int points, String tier) {
+    void increaseBothTypesOfPoints_totalPointsReachesThresholdForNewTier_tierShouldIncrease(int points, String tier) {
         Membership membership = new Membership(0);
         membership.increaseBothTypesOfPoints(points);
         assertEquals(tier, membership.getTier());
@@ -282,7 +283,7 @@ public class MembershipTest {
             "15001, Silver",
             "20001, Bronze",
     })
-    public void decreaseBothTypesOfPoints_totalPointsGoesBelowThresholdForCurrentTier_tierShouldDecrease(int points, String tier) {
+    void decreaseBothTypesOfPoints_totalPointsGoesBelowThresholdForCurrentTier_tierShouldDecrease(int points, String tier) {
         Membership membership = new Membership(25000);
         membership.decreaseBothTypesOfPoints(points);
         assertEquals(tier, membership.getTier());

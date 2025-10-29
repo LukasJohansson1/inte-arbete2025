@@ -2,6 +2,11 @@ package com.example.kassasystem;
 
 public class Membership {
 
+    private static final String BRONZE = "Bronze";
+    private static final String SILVER = "Silver";
+    private static final String GOLD = "Gold";
+    private static final String PLATINUM = "Platinum";
+
     private String tier;
     //totalt antal poäng som en Customer har tjänat in. Bestämmer kundens Tier.
     private int totalPoints;
@@ -9,7 +14,7 @@ public class Membership {
     private int availablePoints;
 
     public Membership() {
-        tier = "Bronze";
+        tier = BRONZE;
     }
 
     public Membership(int points) {
@@ -19,37 +24,37 @@ public class Membership {
             totalPoints = points;
             availablePoints = points;
             if (points < 5000) {
-                tier = "Bronze";
+                tier = BRONZE;
             }
             else if (points < 10000) {
-                tier = "Silver";
+                tier = SILVER;
             }
             else if (points < 25000) {
-                tier = "Gold";
+                tier = GOLD;
             }
             else {
-                tier = "Platinum";
+                tier = PLATINUM;
             }
         }
     }
 
     public Membership(String tier) {
         switch(tier) {
-            case("Bronze"):
+            case(BRONZE):
                 totalPoints = 0;
-                this.tier = "Bronze";
+                this.tier = BRONZE;
                 break;
-            case("Silver"):
+            case(SILVER):
                 totalPoints = 5000;
-                this.tier = "Silver";
+                this.tier = SILVER;
                 break;
-            case("Gold"):
+            case(GOLD):
                 totalPoints = 10000;
-                this.tier = "Gold";
+                this.tier = GOLD;
                 break;
-            case ("Platinum"):
+            case (PLATINUM):
                 totalPoints = 25000;
-                this.tier = "Platinum";
+                this.tier = PLATINUM;
                 break;
             default:
                 throw new IllegalArgumentException("The membership you have chosen does not exist");
@@ -66,15 +71,15 @@ public class Membership {
 
     public void changeTier(int points) {
         if (points < 5000) {
-            tier = "Bronze";
+            tier = BRONZE;
         }
         else if (points < 10000) {
-            tier = "Silver";
+            tier = SILVER;
         }
         else if (points < 25000) {
-            tier = "Gold";
+            tier = GOLD;
         }
-        else tier = "Platinum";
+        else tier = PLATINUM;
     }
 
     //fixa kodupprepning

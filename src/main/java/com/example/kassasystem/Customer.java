@@ -2,8 +2,13 @@ package com.example.kassasystem;
 
 public class Customer {
 
-    private String firstName, lastName, address, socialSecurityNumber, telephoneNumber, emailAddress;
-    private Membership membership;
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String socialSecurityNumber;
+    private String telephoneNumber;
+    private String emailAddress;
+    private final Membership membership;
 
     public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress) {
         setFirstName(firstName);
@@ -24,6 +29,7 @@ public class Customer {
         this.emailAddress = emailAddress;
         this.membership = membership;
     }
+
     public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, int membershipPoints) {
         setFirstName(firstName);
         this.lastName = lastName;
@@ -33,6 +39,7 @@ public class Customer {
         this.emailAddress = emailAddress;
         this.membership = new Membership(membershipPoints);
     }
+
     public Customer(String firstName, String lastName, String address, String socialSecurityNumber, String telephoneNumber, String emailAddress, String membershipTier) {
         setFirstName(firstName);
         this.lastName = lastName;

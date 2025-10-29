@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MembershipRegistry {
 
-    private static Map<String, List<Customer>> members = new HashMap<>();
+    private static final Map<String, List<Customer>> members = new HashMap<>();
 
     public void addMember(Customer customer) {
         members.computeIfAbsent(customer.getMembershipTier(), k -> new ArrayList<>()).add(customer);
