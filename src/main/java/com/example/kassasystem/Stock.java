@@ -8,26 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Manage items persisted in a CSV-like file.
+ */
 public class Stock {
     private final List<Item> itemList = new ArrayList<>();
     private final String filePath;
 
-
+    /**
+     * Create Stock and load items from file.
+     */
     public Stock(String filePath) {
         this.filePath = filePath;
         loadItemsFromFile();
     }
 
+    /**
+     * Load items from the backing file into memory.
+     * Skips blank and malformed lines.
+     */
     private void loadItemsFromFile() {
         Path path = Path.of(filePath);
         try (BufferedReader br = Files.newBufferedReader(path)) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.isBlank()) continue;
+                if (line.isBlank()) continue; // skip empty lines
                 String[] parts = line.split(",", -1);
-                if (parts.length < 7) {
-                    continue;
-                }
+                if (parts.length < 7) continue; // skip short/malformed lines
+
                 if (parts[6].equals("WeightItem")) {
                     EANBarcode barcode = new EANBarcode(parts[0].trim());
                     String name = parts[1].trim();
@@ -52,10 +60,17 @@ public class Stock {
         }
     }
 
+    /**
+     * Return a copy of current items.
+     */
     public List<Item> getItems() {
         return new ArrayList<>(itemList);
     }
 
+    /**
+     * Add an item and persist it.
+     * Throws if item is null or barcode already exists.
+     */
     public void addItem(Item item) throws IOException {
         Path pathOfFile = Path.of(this.filePath);
         String data;
@@ -88,8 +103,11 @@ public class Stock {
         itemList.add(item);
     }
 
+    /**
+     * Delete item by barcode; update file and memory.
+     * Returns true if removed, false if not found.
+     */
     public boolean deleteItem(EANBarcode barcode) throws IOException {
-        // Find the item to delete
         Item itemToDelete = null;
         for (Item item : itemList) {
             if (item.getBarcode().getCode().equals(barcode.getCode())) {
@@ -104,7 +122,7 @@ public class Stock {
             List<String> updatedLines = new ArrayList<>();
             for (String line : lines) {
                 if (line.isBlank()) {
-                    continue;
+                    continue; // skip blanks when rewriting
                 }
                 String firstColumn = line.split(",", -1)[0].trim();
                 if (!firstColumn.equals(barcode.getCode())) {
@@ -117,6 +135,10 @@ public class Stock {
         return false;
     }
 
+    /**
+     * Find item by barcode in memory.
+     * Throws if not found.
+     */
     public Item getSpecificItemByBarcode(EANBarcode barcode) {
         for (Item item : itemList) {
             if (item.getBarcode().equals(barcode)) {
