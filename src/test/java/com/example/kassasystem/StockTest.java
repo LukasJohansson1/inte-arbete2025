@@ -107,7 +107,7 @@ public class StockTest {
     }
 
     @Test
-    void testStockAddWeightedItem(@TempDir Path tempDir) throws IOException {
+    void testStockAddWeightedItem_AddedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -130,7 +130,7 @@ public class StockTest {
     }
 
     @Test
-    void testStockAddAmountItem_list_AddedInList(@TempDir Path tempDir) throws IOException {
+    void testStockAddAmountItem_AddedInList(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
@@ -154,7 +154,7 @@ public class StockTest {
     }
 
     @Test
-    void testStockAddAmountItem_list_AddedInFile(@TempDir Path tempDir) throws IOException {
+    void testStockAddAmountItem_AddedInFile(@TempDir Path tempDir) throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "dataTest", ".csv");
         String data = """
                 Barcode,name,salesTax,price,ageLimit,weight/amount,type
