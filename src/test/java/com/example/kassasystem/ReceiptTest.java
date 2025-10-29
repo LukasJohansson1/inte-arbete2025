@@ -30,19 +30,6 @@ public class ReceiptTest {
         assertThrows(IllegalArgumentException.class, () -> receipt.addItem(null));
     } // We already do check for valid weight the creation of WeightPriceItem only need to check for null
 
-    @Test
-    void testRemoveItemShouldThrowIfItemNotPresent() {
-        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
-        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item),
-                "Expected IllegalArgumentException when removing item not in receipt");
-    } //Check that removing an item not in receipt throws exception
-
-    @Test
-    void testRemoveNullItemShouldThrow() {
-        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(null), 
-                "Removing null item should throw IllegalArgumentException");
-    } // Check that removing null item throws exception
-
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5})
     void testGetTotalWithAmountPriceItemParameterized(int amount) {
@@ -117,41 +104,6 @@ public class ReceiptTest {
     } // Check that printReceipt outputs the correct information
 
     @Test
-    void testAddAndRemoveItem(){
-        AmountPriceItem item = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0 , 2, new EANBarcode("5012345678900"));
-        receipt.addItem(item);
-        assertTrue(receipt.getItems().contains(item), "Item should exist in receipt after addItem");
-
-        receipt.removeItem(item);
-        assertFalse(receipt.getItems().contains(item), "Item should not exist in receipt after removeItem");
-    } // Verify that addItem and removeItem work correctly in tandem
-
-    @Test
-    void testRemoveItemFromEmptyReceipt() {
-        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("5012345678900"));
-        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item));
-    } // Check that removing an item from an empty receipt throws exception
-
-    @Test
-    void testRemoveItemWithDifferentInstance() {
-        AmountPriceItem item1 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("5012345678900"));
-        AmountPriceItem item2 = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
-        receipt.addItem(item1);
-        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(item2));
-    } // Ensure that removing an item with a different instance throws exception
-
-    @Test
-    void testRemoveOneInstanceWhenMultipleExist() {
-        AmountPriceItem item = new AmountPriceItem("Mjölk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
-        receipt.addItem(item);
-        receipt.addItem(item);
-        assertEquals(2, receipt.getItems().size());
-        
-        receipt.removeItem(item);
-        assertEquals(1, receipt.getItems().size());
-    } // Ensure that removing one instance of an item when multiple exist only removes one
-
-    @Test
     public void testSortItemsByName() {
         AmountPriceItem itemA = new AmountPriceItem("Apple", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
         AmountPriceItem itemC = new AmountPriceItem("Carrot", SalesTax.MEDIUM, new Money(150), 0, 1, new EANBarcode("5012345678900"));
@@ -207,4 +159,35 @@ public class ReceiptTest {
         Money total = receipt.getTotal();
         assertEquals(0, total.getAmount(), "Total should be 0 for unknown item type");
     } // Ensure that unknown item types contribute 0 to the total
+
+    @Test
+    void testRemoveItemScenarios() {
+        // Removing from empty receipt
+        AmountPriceItem validItem = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
+        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(validItem), "Removing from empty receipt should throw");
+        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(null), "Removing null item should throw");
+
+        // Removing non-existing item
+        receipt.addItem(new AmountPriceItem("Bread", SalesTax.MEDIUM, new Money(50), 0, 1, new EANBarcode("5012345678900")));
+        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(validItem), "Removing non-existing item should throw");
+
+        // Valid removal
+        receipt.addItem(validItem);
+        assertTrue(receipt.getItems().contains(validItem));
+        receipt.removeItem(validItem);
+        assertFalse(receipt.getItems().contains(validItem), "Item should be removed successfully");
+
+        // Removing different instance with same data
+        AmountPriceItem sameDataDifferentInstance = new AmountPriceItem("Milk", SalesTax.MEDIUM, new Money(100), 0, 1, new EANBarcode("4006381333931"));
+        receipt.addItem(validItem);
+        assertThrows(IllegalArgumentException.class, () -> receipt.removeItem(sameDataDifferentInstance), "Removing different instance should throw");
+
+        // Multiple instances
+        receipt.addItem(validItem);
+        receipt.addItem(validItem);
+        assertEquals(3, receipt.getItems().stream().filter(i -> i == validItem).count(), "There should be 2 instances");
+        receipt.removeItem(validItem);
+        assertEquals(2, receipt.getItems().stream().filter(i -> i == validItem).count(), "Only one instance should be removed");
+    } // Comprehensive test for various removeItem scenarios
+
 }
