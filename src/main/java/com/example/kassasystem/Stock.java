@@ -60,6 +60,11 @@ public class Stock {
         Path pathOfFile = Path.of(this.filePath);
         String data;
         Objects.requireNonNull(item, "Item cannot be null");
+        for (Item existingItem : itemList) {
+            if (existingItem.getBarcode().getCode().equals(item.getBarcode().getCode())) {
+                throw new IllegalArgumentException("Item with the same barcode already exists");
+            }
+        }
         if (item instanceof WeightPriceItem) {
             data = String.format("%n%s,%s,%s,%s,%d,%d,%s",
                     item.getBarcode().getCode(),
