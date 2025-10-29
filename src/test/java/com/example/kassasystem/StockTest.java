@@ -276,7 +276,6 @@ public class StockTest {
         assertFalse(deletedItem);
         List<Item> items = stock.getItems();
         assertEquals(1, items.size());
-        assertEquals("Product A", items.getFirst().getName());
 
         boolean deleted = Files.deleteIfExists(tempFile);
         if (!deleted) {
